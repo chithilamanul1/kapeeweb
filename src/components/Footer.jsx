@@ -84,13 +84,13 @@ const Footer = () => {
         </div>
 
         <div className="pt-10 border-t border-emerald-900 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-emerald-100/20 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
+          <p className="text-emerald-100/50 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
             © {new Date().getFullYear()} Kapee Travels and Tours. All rights reserved. 
-            <span className="ml-4 text-emerald-100/40">Made with ❤️ by <a href="https://seranex.org" className="hover:text-emerald-400 transition-colors">Seranex</a></span>
+            <span className="ml-4 text-emerald-100/60">Made with ❤️ by <a href="https://seranex.org" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">Seranex</a></span>
           </p>
-          <div className="flex gap-10 text-emerald-100/20 text-[10px] uppercase tracking-widest font-black">
-            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+          <div className="flex gap-10 text-emerald-100/40 text-[10px] uppercase tracking-widest font-black">
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
