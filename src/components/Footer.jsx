@@ -76,6 +76,13 @@ const Footer = () => {
           </div>
         </div>
 
+        <div className="mt-20 flex flex-wrap justify-center gap-x-6 gap-y-2 opacity-10 text-[9px] font-bold text-emerald-100 uppercase tracking-[0.2em]">
+          <span>#AirportTaxi</span> <span>#TaxiService</span> <span>#AirportTransfer</span> <span>#TourismSupport</span>
+          <span>#RideWithUs</span> <span>#TravelEasy</span> <span>#BookNow</span> <span>#OnTimeEveryTime</span>
+          <span>#ExploreWithUs</span> <span>#SafeTravel</span> <span>#HassleFreeTravel</span> <span>#BestTaxiService</span>
+          <span>#DiscoverMore</span> <span>#AirportPickup</span> <span>#SriLankaTours</span>
+        </div>
+
         <div className="pt-10 border-t border-emerald-900 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-emerald-100/20 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
             © {new Date().getFullYear()} Kapee Travels and Tours. All rights reserved. 

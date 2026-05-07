@@ -21,6 +21,13 @@ export const metadata = {
   },
   description: 'Premium travel agency in Sri Lanka. Airport transfers, custom tours, and corporate travel with N Kapila Silva. Experience Sri Lanka like never before.',
   keywords: [
+    'Airport Taxi', 'Taxi Service', 'Airport Transfer', 'Tourism Support', 'Ride With Us', 
+    'Travel Easy', 'Book Now', 'On Time Every Time', 'Explore With Us', 'Safe Travel',
+    'Your Ride Is Here', 'Hassle Free Travel', 'Best Taxi Service', 'Trusted By Thousands',
+    'Customer First', 'Travel In Comfort', 'Local Tours', 'City Tours', 'Tour With Us',
+    'Discover More', 'To The Airport', 'From The Airport', 'Airport Pickup', 'Airport Drop Off',
+    'Flight Transfer', 'Ride To Airport', 'Never Miss A Flight', 'Reliable Taxi', 'Travel Made Easy',
+    'Taxi Near Me', '24x7 Taxi', 'Kapee Tours', 'Kapila Tours Seeduwa', 'Sri Lanka Taxi',
     'kapee tours', 
     'kapila tours', 
     'tours seeduwa', 
