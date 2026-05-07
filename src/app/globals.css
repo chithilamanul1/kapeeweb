@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 25, 47;
+  --background-end-rgb: 2, 12, 27;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  scroll-behavior: smooth;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-glass;
+  }
+  
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-lg border border-white/10 shadow-premium;
+  }
+
+  .nav-link {
+    @apply relative text-white/70 hover:text-white transition-colors duration-300;
+  }
+
+  .nav-link::after {
+    @apply content-[''] absolute left-0 bottom-[-4px] w-0 h-[2px] bg-gold transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .btn-premium {
+    @apply px-8 py-3 bg-gold text-primary font-bold rounded-full hover:bg-gold-light transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
+  }
+
+  .btn-whatsapp {
+    @apply px-8 py-3 bg-emerald text-white font-bold rounded-full hover:bg-emerald-light transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-5xl font-serif mb-6;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-gold via-white to-gold-light;
+  }
+}
+
+/* 3D Card Animation */
+.card-3d {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-3d:hover {
+  transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-primary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold/50 rounded-full hover:bg-gold;
+}
