@@ -34,11 +34,11 @@ const Navbar = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
         <Link href="/" className="relative group">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 relative">
-               <div className="w-full h-full overflow-hidden flex items-center justify-center transition-all duration-300">
-                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-contain" />
+            <div className="relative group">
+               <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300">
+                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-cover" />
                </div>
-               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gold rounded-full border-2 border-white animate-pulse" />
+               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gold rounded-full border-2 border-white shadow-sm" />
             </div>
             <div className="flex flex-col">
               <span className={`text-2xl font-serif font-black tracking-tighter transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-emerald-900'}`}>KAPEE</span>

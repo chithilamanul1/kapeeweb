@@ -5,77 +5,73 @@ import { ChevronDown } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50">
-      {/* Background Image with Parallax Effect */}
-      <motion.div 
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 10, ease: "easeOut" }}
-        className="absolute inset-0 z-0"
-      >
-        <div className="absolute inset-0 bg-white/30 z-10" />
-        <img 
-          src="/hero-bg.png" 
-          alt="Sri Lanka Landscape" 
-          className="w-full h-full object-cover opacity-100"
-        />
-      </motion.div>
-
-      <div className="container mx-auto px-6 relative z-20 text-center pt-32 md:pt-40">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="inline-block px-6 py-2 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-black tracking-[0.4em] uppercase mb-8 shadow-sm">
-            Premium Travel Experiences
-          </span>
-          <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[0.95] tracking-tighter text-emerald-950 uppercase drop-shadow-sm">
-            Explore Sri Lanka in <br />
-            <span className="text-emerald-600">Comfort & Style</span>
-          </h1>
-          <p className="text-base md:text-xl text-slate-900 max-w-2xl mx-auto mb-12 font-bold leading-relaxed drop-shadow-sm">
-            Discover the enchanting beauty of the island with <span className="text-emerald-600 font-black">KAPEE Tours</span>. 
-            Based in Seeduwa, we provide elite airport transfers and bespoke island-wide tours, 
-            ensuring your journey is as remarkable as the destination.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="flex flex-col md:flex-row gap-6 justify-center items-center"
-        >
-          <button 
-            className="px-12 py-5 bg-emerald-600 text-white rounded-full text-xs uppercase tracking-[0.2em] font-black hover:bg-emerald-700 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-emerald-600/20"
-            onClick={() => window.dispatchEvent(new CustomEvent('openBooking'))}
-          >
-            Book Your Ride
-          </button>
-          <a 
-            href="#destinations" 
-            className="px-12 py-5 text-xs uppercase tracking-[0.2em] font-black text-emerald-950 border-2 border-emerald-950/10 rounded-full hover:bg-emerald-50 transition-all duration-300"
-          >
-            Explore Tours
-          </a>
-        </motion.div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
+    <section className="relative min-h-[90vh] md:min-h-screen flex items-center overflow-hidden bg-white">
+      {/* Background with subtle overlay */}
+      <div className="absolute inset-0 z-0">
         <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="text-emerald-600/40 cursor-pointer hover:text-emerald-600 transition-colors text-center"
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 10, ease: "easeOut" }}
+          className="w-full h-full"
         >
-          <p className="text-[9px] font-black uppercase tracking-[0.3em] mb-3">Scroll to discover</p>
-          <ChevronDown className="mx-auto" size={20} strokeWidth={3} />
+          <img 
+            src="/hero-bg.png" 
+            alt="Sri Lanka Scenery" 
+            className="w-full h-full object-cover"
+          />
         </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10 hidden md:block" />
+        <div className="absolute inset-0 bg-white/60 z-10 md:hidden" />
       </div>
 
-      <div className="absolute top-0 right-0 h-full w-[1px] bg-gradient-to-b from-transparent via-emerald-600/20 to-transparent z-10 hidden xl:block mr-20" />
+      <div className="container mx-auto px-6 relative z-20">
+        <div className="max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="h-[1px] w-12 bg-emerald-600" />
+              <span className="text-emerald-600 text-[10px] font-black tracking-[0.4em] uppercase">
+                Premium Travel Experiences
+              </span>
+            </div>
+            
+            <h1 className="text-5xl md:text-8xl font-serif font-black mb-8 leading-[0.9] tracking-tighter text-emerald-950">
+              Journey Through <br />
+              <span className="text-emerald-600 italic">Paradise</span> In Style
+            </h1>
+            
+            <p className="text-lg md:text-xl text-slate-700 mb-12 font-medium leading-relaxed max-w-xl">
+              Based in Seeduwa, <span className="text-emerald-950 font-black">Kapee Travels</span> offers elite airport transfers and bespoke island-wide tours tailored to your comfort.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-5">
+              <button 
+                className="px-10 py-5 bg-emerald-600 text-white rounded-full text-[10px] uppercase tracking-[0.2em] font-black hover:bg-emerald-700 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-3"
+                onClick={() => window.dispatchEvent(new CustomEvent('openBooking'))}
+              >
+                <span>Book Your Ride</span>
+              </button>
+              <a 
+                href="#services" 
+                className="px-10 py-5 text-[10px] uppercase tracking-[0.2em] font-black text-emerald-950 border border-emerald-950/10 rounded-full hover:bg-emerald-50 transition-all text-center flex items-center justify-center"
+              >
+                Explore Services
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Floating Elements / Accent */}
+      <div className="absolute bottom-10 right-10 z-20 hidden lg:block">
+        <div className="flex items-center gap-6 text-emerald-950/20 rotate-90 origin-right">
+           <span className="text-[10px] font-black uppercase tracking-[0.5em]">Discover Sri Lanka</span>
+           <div className="h-[1px] w-24 bg-emerald-950/20" />
+        </div>
+      </div>
     </section>
   );
 };

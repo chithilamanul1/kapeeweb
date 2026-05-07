@@ -41,7 +41,7 @@ export const metadata = {
   ],
   authors: [{ name: 'N Kapila Silva' }],
   creator: 'Kapi Travels',
-  metadataBase: new URL('https://kapitravels.lk'), // Update to real domain
+  metadataBase: new URL('https://kapeeweb.vercel.app'),
   alternates: {
     canonical: '/',
   },

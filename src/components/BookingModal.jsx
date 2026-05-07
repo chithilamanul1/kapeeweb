@@ -12,6 +12,7 @@ const vehicles = [
     luggage: 3, 
     ratePerKm: 0.8, // EUR per KM
     minRate: 25,
+    multiplier: 1,
     image: '/vehicles/sedancar.png',
     description: 'Perfect for couples or small families.'
   },
@@ -22,9 +23,18 @@ const vehicles = [
     luggage: 8, 
     ratePerKm: 1.1, // EUR per KM
     minRate: 35,
+    multiplier: 1.4,
     image: '/vehicles/toyota-highroof.png',
     description: 'Comfortable group travel with ample luggage space.'
   }
+];
+
+const FIXED_RATES = [
+  { keywords: ['galle', 'unawatuna', 'bossa', 'ahangama', 'kogala'], rate: 68 },
+  { keywords: ['bentota', 'beruwala', 'iduruwa'], rate: 38 },
+  { keywords: ['colombo'], rate: 25 },
+  { keywords: ['kandy'], rate: 63 },
+  { keywords: ['sigiriya', 'habarana'], rate: 63 }
 ];
 
 const BookingModal = () => {
@@ -109,9 +119,21 @@ const BookingModal = () => {
   const calculatePrice = (vehicle) => {
     if (!vehicle) return 0;
     
-    // Base rate or distance-based rate
     let rateEUR = vehicle.minRate;
-    if (distanceInfo.km > 0) {
+    const dest = formData.destination.toLowerCase();
+    const isAirportPickup = formData.pickup.toLowerCase().includes('airport') || formData.pickup.toLowerCase().includes('bia');
+
+    // Check for fixed rates if starting from airport
+    let fixedMatch = null;
+    if (isAirportPickup) {
+      fixedMatch = FIXED_RATES.find(zone => 
+        zone.keywords.some(kw => dest.includes(kw))
+      );
+    }
+
+    if (fixedMatch) {
+      rateEUR = fixedMatch.rate * vehicle.multiplier;
+    } else if (distanceInfo.km > 0) {
       const distRate = distanceInfo.km * vehicle.ratePerKm;
       rateEUR = Math.max(vehicle.minRate, distRate);
     }
@@ -138,6 +160,7 @@ const BookingModal = () => {
       `Price.       : ${currencySymbols[currency]} ${calculatePrice(formData.vehicle)}%0A` +
       `Drop off    : ${formData.destination}%0A` +
       `Contact No : ${formData.phone}%0A%0A` +
+      `*Note: Customers must pay for fuel separately.*%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
     
     if (typeof window !== 'undefined') {
@@ -401,6 +424,7 @@ const BookingModal = () => {
                             <p className="font-black text-xl text-emerald-950">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</p>
                         </div>
                         {distanceInfo.km > 0 && <p className="text-[10px] text-emerald-600 font-bold tracking-widest uppercase">{distanceInfo.text}</p>}
+                        <p className="text-[10px] text-orange-600 font-black mt-1 uppercase tracking-tighter">* Fuel not included</p>
                       </div>
                     </div>
                     

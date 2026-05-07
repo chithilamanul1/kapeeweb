@@ -11,8 +11,8 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-8">
             <div className="flex items-center gap-3">
-               <div className="w-16 h-16 overflow-hidden flex items-center justify-center">
-                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-contain" />
+               <div className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center border border-emerald-900/50">
+                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-cover" />
                </div>
                <div className="flex flex-col">
                  <span className="text-2xl font-serif font-black text-white tracking-tighter">KAPEE</span>
