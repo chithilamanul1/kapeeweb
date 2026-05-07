@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2 } from 'lucide-react';
 
 const vehicles = [
   { 
@@ -10,7 +10,8 @@ const vehicles = [
     name: 'Luxury Sedan', 
     passengers: 3, 
     luggage: 3, 
-    rate: 25, // Base rate in EUR for Colombo
+    ratePerKm: 0.8, // EUR per KM
+    minRate: 25,
     image: '/vehicles/sedancar.png',
     description: 'Perfect for couples or small families.'
   },
@@ -19,34 +20,23 @@ const vehicles = [
     name: 'Spacious Van', 
     passengers: 8, 
     luggage: 8, 
-    rate: 35, // Approx base rate in EUR
+    ratePerKm: 1.1, // EUR per KM
+    minRate: 35,
     image: '/vehicles/toyota-highroof.png',
     description: 'Comfortable group travel with ample luggage space.'
   }
 ];
 
-const destinationRates = {
-  'colombo': 25,
-  'galle': 68,
-  'unawatuna': 68,
-  'bossa': 68,
-  'ahangama': 68,
-  'kogala': 68,
-  'bentota': 38,
-  'beruwala': 38,
-  'iduruwa': 38,
-  'kandy': 63,
-  'sigiriya': 63,
-  'habarana': 63
-};
-
 const BookingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [currency, setCurrency] = useState('EUR'); // Default to EUR as per rates
+  const [currency, setCurrency] = useState('EUR');
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [distanceInfo, setDistanceInfo] = useState({ km: 0, text: '' });
+  
   const [formData, setFormData] = useState({
     vehicle: null,
-    pickup: '',
+    pickup: 'Bandaranaike International Airport (BIA)',
     destination: '',
     date: '',
     time: '',
@@ -69,29 +59,69 @@ const BookingModal = () => {
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
 
-  const calculatePrice = (baseRate) => {
-    // If destination is recognized, use the destination rate
-    const dest = formData.destination.toLowerCase().trim();
-    let rateEUR = baseRate;
-
-    // Check for destination match
-    for (const [key, value] of Object.entries(destinationRates)) {
-      if (dest.includes(key)) {
-        rateEUR = value;
-        // Adjust for Van (usually +20% or a fixed amount, let's assume +15 EUR for Van if it's a long trip)
-        if (formData.vehicle?.id === 'van') {
-            rateEUR += 15;
-        }
-        break;
+  const getCoordinates = async (address) => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address + ', Sri Lanka')}&limit=1`);
+      const data = await response.json();
+      if (data && data.length > 0) {
+        return { lat: data[0].lat, lon: data[0].lon };
       }
+      return null;
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      return null;
+    }
+  };
+
+  const calculateDistance = useCallback(async () => {
+    if (!formData.pickup || !formData.destination) return;
+    
+    setIsCalculating(true);
+    try {
+      const start = await getCoordinates(formData.pickup);
+      const end = await getCoordinates(formData.destination);
+
+      if (start && end) {
+        const routeResponse = await fetch(`https://router.project-osrm.org/route/v1/driving/${start.lon},${start.lat};${end.lon},${end.lat}?overview=false`);
+        const routeData = await routeResponse.json();
+
+        if (routeData.routes && routeData.routes.length > 0) {
+          const km = routeData.routes[0].distance / 1000;
+          setDistanceInfo({ 
+            km: Math.ceil(km), 
+            text: `${Math.ceil(km)} KM trip` 
+          });
+        }
+      }
+    } catch (error) {
+      console.error("OSRM error:", error);
+    } finally {
+      setIsCalculating(false);
+    }
+  }, [formData.pickup, formData.destination]);
+
+  useEffect(() => {
+    if (step === 3) {
+      calculateDistance();
+    }
+  }, [step, calculateDistance]);
+
+  const calculatePrice = (vehicle) => {
+    if (!vehicle) return 0;
+    
+    // Base rate or distance-based rate
+    let rateEUR = vehicle.minRate;
+    if (distanceInfo.km > 0) {
+      const distRate = distanceInfo.km * vehicle.ratePerKm;
+      rateEUR = Math.max(vehicle.minRate, distRate);
     }
 
-    // Convert from EUR to target currency
+    // Currency conversion
     const priceTarget = rateEUR * (currency === 'EUR' ? 1 : (currency === 'LKR' ? exchangeRates.LKR : exchangeRates.USD));
 
     return priceTarget.toLocaleString(undefined, {
-      minimumFractionDigits: currency === 'LKR' ? 0 : 0,
-      maximumFractionDigits: currency === 'LKR' ? 0 : 0
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     });
   };
 
@@ -104,6 +134,8 @@ const BookingModal = () => {
       `Time.        : ${formData.time}%0A` +
       `Flight.       : ${formData.flight || 'N/A'}%0A` +
       `Vehicle.    : ${formData.vehicle?.name || 'Any'}%0A` +
+      `Distance. : ${distanceInfo.km} KM%0A` +
+      `Price.       : ${currencySymbols[currency]} ${calculatePrice(formData.vehicle)}%0A` +
       `Drop off    : ${formData.destination}%0A` +
       `Contact No : ${formData.phone}%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
@@ -141,8 +173,8 @@ const BookingModal = () => {
                   <CheckCircle2 size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-white">Safe & Reliable</p>
-                  <p className="text-xs text-emerald-100/40 font-bold">Licensed professional drivers</p>
+                  <p className="text-sm font-black text-white">Smart Pricing</p>
+                  <p className="text-xs text-emerald-100/40 font-bold">Real-time distance calculation</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -151,7 +183,7 @@ const BookingModal = () => {
                 </div>
                 <div>
                   <p className="text-sm font-black text-white">Multi-Currency</p>
-                  <p className="text-xs text-emerald-100/40 font-bold">LKR, USD & EUR pricing</p>
+                  <p className="text-xs text-emerald-100/40 font-bold">LKR, USD & EUR support</p>
                 </div>
               </div>
             </div>
@@ -223,7 +255,7 @@ const BookingModal = () => {
                       <div className="h-40 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
                         <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" />
                         <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">
-                           {currencySymbols[currency]} {calculatePrice(v.rate)}
+                           From {currencySymbols[currency]} {calculatePrice(v)}
                         </div>
                       </div>
                       <div className="flex justify-between items-center mb-1 mt-auto">
@@ -363,8 +395,12 @@ const BookingModal = () => {
                         <p className="font-black text-lg text-emerald-600">{formData.vehicle?.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Estimated</p>
-                        <p className="font-black text-xl text-emerald-950">{currencySymbols[currency]} {calculatePrice(formData.vehicle?.rate)}</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Estimated Price</p>
+                        <div className="flex items-center gap-2 justify-end">
+                            {isCalculating && <Loader2 className="animate-spin text-emerald-600" size={16} />}
+                            <p className="font-black text-xl text-emerald-950">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</p>
+                        </div>
+                        {distanceInfo.km > 0 && <p className="text-[10px] text-emerald-600 font-bold tracking-widest uppercase">{distanceInfo.text}</p>}
                       </div>
                     </div>
                     
@@ -419,7 +455,7 @@ const BookingModal = () => {
                     </button>
                     <button 
                       onClick={generateWhatsApp}
-                      disabled={!formData.name || !formData.phone}
+                      disabled={!formData.name || !formData.phone || isCalculating}
                       className="px-10 py-3 bg-[#25D366] text-white font-black rounded-full hover:bg-[#128C7E] transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"
                     >
                       <Send size={18} /> Confirm on WhatsApp
