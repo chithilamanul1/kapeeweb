@@ -24,30 +24,31 @@ const Hero = () => {
         <div className="absolute inset-0 bg-white/60 z-10 md:hidden" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-20">
-        <div className="max-w-3xl">
+      <div className="container mx-auto px-6 relative z-20 pt-32 md:pt-0">
+        <div className="max-w-3xl text-center md:text-left mx-auto md:mx-0">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="flex items-center gap-3 mb-8">
-              <div className="h-[1px] w-12 bg-emerald-600" />
+            <div className="flex items-center justify-center md:justify-start gap-3 mb-6 md:mb-8">
+              <div className="h-[1px] w-12 bg-emerald-600 hidden md:block" />
               <span className="text-emerald-600 text-[10px] font-black tracking-[0.4em] uppercase">
                 Premium Travel Experiences
               </span>
             </div>
             
-            <h1 className="text-5xl md:text-8xl font-serif font-black mb-8 leading-[0.9] tracking-tighter text-emerald-950">
+            <h1 className="text-4xl md:text-8xl font-serif font-black mb-6 md:mb-8 leading-[1.1] md:leading-[0.9] tracking-tighter text-emerald-950">
               Journey Through <br />
               <span className="text-emerald-600 italic">Paradise</span> In Style
             </h1>
             
-            <p className="text-lg md:text-xl text-slate-700 mb-12 font-medium leading-relaxed max-w-xl">
+            <p className="text-base md:text-xl text-slate-700 mb-10 md:mb-12 font-medium leading-relaxed max-w-xl">
               Based in Seeduwa, <span className="text-emerald-950 font-black">Kapee Travels</span> offers elite airport transfers and bespoke island-wide tours tailored to your comfort.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-5">
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-5">
               <button 
                 className="px-10 py-5 bg-emerald-600 text-white rounded-full text-[10px] uppercase tracking-[0.2em] font-black hover:bg-emerald-700 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-3"
                 onClick={() => window.dispatchEvent(new CustomEvent('openBooking'))}
