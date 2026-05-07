@@ -13,11 +13,11 @@ const Hero = () => {
         transition={{ duration: 10, ease: "easeOut" }}
         className="absolute inset-0 z-0"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white/20 z-10" />
+        <div className="absolute inset-0 bg-white/30 z-10" />
         <img 
           src="/hero-bg.png" 
           alt="Sri Lanka Landscape" 
-          className="w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover opacity-100"
         />
       </motion.div>
 
@@ -30,12 +30,12 @@ const Hero = () => {
           <span className="inline-block px-6 py-2 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-black tracking-[0.4em] uppercase mb-8 shadow-sm">
             Premium Travel Experiences
           </span>
-          <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[0.95] tracking-tighter text-emerald-950 uppercase">
+          <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[0.95] tracking-tighter text-emerald-950 uppercase drop-shadow-sm">
             Explore Sri Lanka in <br />
             <span className="text-emerald-600">Comfort & Style</span>
           </h1>
-          <p className="text-base md:text-xl text-slate-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
-            Discover the enchanting beauty of the island with <span className="text-emerald-600 font-black">Kapee Tours</span>. 
+          <p className="text-base md:text-xl text-slate-900 max-w-2xl mx-auto mb-12 font-bold leading-relaxed drop-shadow-sm">
+            Discover the enchanting beauty of the island with <span className="text-emerald-600 font-black">KAPEE Tours</span>. 
             Based in Seeduwa, we provide elite airport transfers and bespoke island-wide tours, 
             ensuring your journey is as remarkable as the destination.
           </p>
@@ -48,7 +48,7 @@ const Hero = () => {
           className="flex flex-col md:flex-row gap-6 justify-center items-center"
         >
           <button 
-            className="btn-premium px-12 py-5 text-xs uppercase tracking-[0.2em] font-black"
+            className="px-12 py-5 bg-emerald-600 text-white rounded-full text-xs uppercase tracking-[0.2em] font-black hover:bg-emerald-700 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-emerald-600/20"
             onClick={() => window.dispatchEvent(new CustomEvent('openBooking'))}
           >
             Book Your Ride

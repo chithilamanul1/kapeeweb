@@ -20,7 +20,7 @@ const Footer = () => {
                </div>
             </div>
             <p className="text-emerald-100/60 text-sm leading-relaxed font-medium">
-              <span className="text-white font-black">Kapee Tours Seeduwa</span> provides premium travel experiences across Sri Lanka. Known as <span className="text-white font-black">Kapila Tours</span>, we ensure every mile is memorable from arrival to departure.
+              <span className="text-white font-black">KAPEE Tours Seeduwa</span> provides premium travel experiences across Sri Lanka. Known as <span className="text-white font-black">KAPEE Tours</span>, we ensure every mile is memorable from arrival to departure.
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-12 h-12 rounded-2xl bg-emerald-900 flex items-center justify-center text-emerald-400 hover:text-white hover:bg-emerald-800 transition-all border border-emerald-800"><Facebook size={20} /></a>

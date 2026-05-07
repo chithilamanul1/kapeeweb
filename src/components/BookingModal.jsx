@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff } from 'lucide-react';
 
 const vehicles = [
   { 
@@ -71,6 +71,7 @@ const BookingModal = () => {
     destination: '',
     date: '',
     time: '',
+    flight: '',
     passengers: 1,
     name: '',
     phone: '',
@@ -99,15 +100,16 @@ const BookingModal = () => {
   };
 
   const generateWhatsApp = () => {
-    const text = `*New Booking Request - Kapee Tours*%0A%0A` +
-      `*Vehicle:* ${formData.vehicle.name}%0A` +
-      `*Pickup:* ${formData.pickup}%0A` +
-      `*Destination:* ${formData.destination}%0A` +
-      `*Date:* ${formData.date}%0A` +
-      `*Time:* ${formData.time}%0A` +
-      `*Passengers:* ${formData.passengers}%0A` +
-      `*Name:* ${formData.name}%0A` +
-      `*Phone:* ${formData.phone}%0A` +
+    const text = `Att : Kapila ( Amendment)%0A` +
+      `Arrival Transfer%0A` +
+      `Name.      : ${formData.name}%0A` +
+      `Pax.          : ${formData.passengers}%0A` +
+      `Date.        : ${formData.date}%0A` +
+      `Time.        : ${formData.time}%0A` +
+      `Flight.       : ${formData.flight || 'N/A'}%0A` +
+      `Vehicle.    : ${formData.vehicle?.name || 'Any'}%0A` +
+      `Drop off    : ${formData.destination}%0A` +
+      `Contact No : ${formData.phone}%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
     
     if (typeof window !== 'undefined') {
@@ -280,7 +282,7 @@ const BookingModal = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Date</label>
                       <div className="relative">
@@ -306,7 +308,20 @@ const BookingModal = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Passengers</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Flight</label>
+                      <div className="relative">
+                        <PlaneTakeoff className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input 
+                          type="text" 
+                          placeholder="Flight No." 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
+                          value={formData.flight}
+                          onChange={(e) => setFormData({...formData, flight: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pax</label>
                       <div className="relative">
                         <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <select 
@@ -314,7 +329,7 @@ const BookingModal = () => {
                           value={formData.passengers}
                           onChange={(e) => setFormData({...formData, passengers: e.target.value})}
                         >
-                          {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n} Persons</option>)}
+                          {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n} Pax</option>)}
                         </select>
                       </div>
                     </div>
@@ -371,7 +386,7 @@ const BookingModal = () => {
                         <p className="text-slate-900 font-bold">{formData.date} @ {formData.time}</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-[10px] uppercase font-black">Passengers</p>
+                        <p className="text-slate-400 text-[10px] uppercase font-black">Pax</p>
                         <p className="text-slate-900 font-bold">{formData.passengers} Persons</p>
                       </div>
                     </div>

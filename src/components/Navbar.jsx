@@ -41,16 +41,15 @@ const Navbar = () => {
                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gold rounded-full border-2 border-white animate-pulse" />
             </div>
             <div className="flex flex-col">
-              <span className={`text-2xl font-serif font-black tracking-tighter transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-white'}`}>KAPEE</span>
-              <span className={`text-[9px] uppercase font-bold tracking-[0.3em] transition-colors duration-300 ${isScrolled ? 'text-emerald-600' : 'text-gold'}`}>Travels & Tours</span>
+              <span className={`text-2xl font-serif font-black tracking-tighter transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-emerald-900'}`}>KAPEE</span>
+              <span className={`text-[9px] uppercase font-bold tracking-[0.3em] transition-colors duration-300 ${isScrolled ? 'text-emerald-600' : 'text-emerald-700'}`}>Travels & Tours</span>
             </div>
           </div>
         </Link>
 
-        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link key={link.name} href={link.href} className={`text-[11px] uppercase tracking-[0.2em] font-black transition-colors duration-300 ${isScrolled ? 'text-slate-600 hover:text-emerald-600' : 'text-white/80 hover:text-white'}`}>
+            <Link key={link.name} href={link.href} className={`text-[11px] uppercase tracking-[0.2em] font-black transition-colors duration-300 ${isScrolled ? 'text-slate-600 hover:text-emerald-600' : 'text-emerald-900/80 hover:text-emerald-900'}`}>
               {link.name}
             </Link>
           ))}
@@ -69,7 +68,7 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <button 
-          className={`md:hidden p-2 transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-white'}`}
+          className={`md:hidden p-2 transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-emerald-900'}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
