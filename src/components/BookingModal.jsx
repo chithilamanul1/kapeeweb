@@ -26,7 +26,7 @@ const vehicles = [
   { 
     id: 'vezel', 
     name: 'Honda Vezel SUV', 
-    passengers: 4, 
+    passengers: 3, 
     luggage: 3, 
     rate: 150, 
     image: '/vehicles/Hondavezel.png',
@@ -222,15 +222,15 @@ const BookingModal = () => {
                         setFormData({ ...formData, vehicle: v });
                         handleNext();
                       }}
-                      className="group p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 hover:shadow-xl"
+                      className="group p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 hover:shadow-xl flex flex-col h-full"
                     >
-                      <div className="h-28 rounded-xl overflow-hidden mb-3 relative bg-slate-50 flex items-center justify-center">
-                        <img src={v.image} alt={v.name} className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
-                        <div className="absolute top-2 right-2 bg-emerald-600 px-2 py-1 rounded-lg text-[10px] font-black text-white">
+                      <div className="h-32 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
+                        <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" />
+                        <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">
                            {currencySymbols[currency]} {calculatePrice(v.rate)}
                         </div>
                       </div>
-                      <div className="flex justify-between items-center mb-1">
+                      <div className="flex justify-between items-center mb-1 mt-auto">
                         <h4 className="font-black text-emerald-950 text-sm">{v.name}</h4>
                         <div className="flex gap-3 text-slate-400">
                           <span className="flex items-center gap-1 text-[10px] font-bold"><Users size={10}/>{v.passengers}</span>
