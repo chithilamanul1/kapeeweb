@@ -35,8 +35,8 @@ const Navbar = () => {
         <Link href="/" className="relative group">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 relative">
-               <div className={`w-full h-full rounded-xl flex items-center justify-center border-2 transition-all duration-300 ${isScrolled ? 'bg-emerald-600 border-emerald-500' : 'bg-white/20 border-white/30 backdrop-blur-md'}`}>
-                  <span className={`font-black text-xs ${isScrolled ? 'text-white' : 'text-gold'}`}>K</span>
+               <div className={`w-full h-full rounded-xl overflow-hidden flex items-center justify-center border-2 transition-all duration-300 ${isScrolled ? 'bg-emerald-600 border-emerald-500' : 'bg-white/20 border-white/30 backdrop-blur-md'}`}>
+                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-cover" />
                </div>
                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gold rounded-full border-2 border-white animate-pulse" />
             </div>

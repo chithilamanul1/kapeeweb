@@ -5,32 +5,37 @@ import { Phone, Mail, MapPin, Facebook, Instagram, Youtube } from 'lucide-react'
 
 const Footer = () => {
   return (
-    <footer id="contact" className="bg-primary-dark pt-20 pb-10 border-t border-gold/20">
+    <footer id="contact" className="bg-emerald-950 pt-20 pb-10 border-t border-emerald-900">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
           {/* Brand Column */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-2">
-               <div className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center border border-gold/30 font-bold text-gold text-xs">KAPEE</div>
-               <span className="text-2xl font-serif font-bold text-gold">Kapi Travels</span>
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+               <div className="w-16 h-16 bg-white rounded-xl overflow-hidden flex items-center justify-center border-2 border-emerald-500">
+                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-cover" />
+               </div>
+               <div className="flex flex-col">
+                 <span className="text-2xl font-serif font-black text-white tracking-tighter">KAPEE</span>
+                 <span className="text-[8px] uppercase tracking-[0.3em] text-emerald-400 font-bold">Travels & Tours</span>
+               </div>
             </div>
-            <p className="text-white/40 text-sm leading-relaxed">
-              <span className="text-white/60 font-bold">Kapee Tours Seeduwa</span> provides premium travel experiences across Sri Lanka. Known as <span className="text-white/60 font-bold">Kapila Tours</span>, we ensure every mile is memorable from arrival to departure.
+            <p className="text-emerald-100/60 text-sm leading-relaxed font-medium">
+              <span className="text-white font-black">Kapee Tours Seeduwa</span> provides premium travel experiences across Sri Lanka. Known as <span className="text-white font-black">Kapila Tours</span>, we ensure every mile is memorable from arrival to departure.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:text-gold hover:bg-gold/10 transition-all border border-white/10"><Facebook size={18} /></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:text-gold hover:bg-gold/10 transition-all border border-white/10"><Instagram size={18} /></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:text-gold hover:bg-gold/10 transition-all border border-white/10"><Youtube size={18} /></a>
+              <a href="#" className="w-12 h-12 rounded-2xl bg-emerald-900 flex items-center justify-center text-emerald-400 hover:text-white hover:bg-emerald-800 transition-all border border-emerald-800"><Facebook size={20} /></a>
+              <a href="#" className="w-12 h-12 rounded-2xl bg-emerald-900 flex items-center justify-center text-emerald-400 hover:text-white hover:bg-emerald-800 transition-all border border-emerald-800"><Instagram size={20} /></a>
+              <a href="#" className="w-12 h-12 rounded-2xl bg-emerald-900 flex items-center justify-center text-emerald-400 hover:text-white hover:bg-emerald-800 transition-all border border-emerald-800"><Youtube size={20} /></a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white uppercase tracking-widest text-sm">Quick Links</h4>
+            <h4 className="text-white uppercase tracking-[0.2em] text-xs font-black mb-8 border-l-4 border-emerald-600 pl-4">Quick Links</h4>
             <ul className="space-y-4">
               {['Home', 'Services', 'Destinations', 'Gallery', 'Terms & Conditions'].map(item => (
                 <li key={item}>
-                  <Link href="#" className="text-white/40 hover:text-gold transition-colors text-sm">{item}</Link>
+                  <Link href="#" className="text-emerald-100/40 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest">{item}</Link>
                 </li>
               ))}
             </ul>
@@ -38,11 +43,11 @@ const Footer = () => {
 
           {/* Services */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white uppercase tracking-widest text-sm">Our Services</h4>
+            <h4 className="text-white uppercase tracking-[0.2em] text-xs font-black mb-8 border-l-4 border-emerald-600 pl-4">Our Services</h4>
             <ul className="space-y-4">
               {['Airport Transfers', 'Island Wide Tours', 'Corporate Travel', 'Day Excursions', 'Hotel Bookings'].map(item => (
                 <li key={item}>
-                  <Link href="#" className="text-white/40 hover:text-gold transition-colors text-sm">{item}</Link>
+                  <Link href="#" className="text-emerald-100/40 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest">{item}</Link>
                 </li>
               ))}
             </ul>
@@ -50,35 +55,35 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white uppercase tracking-widest text-sm">Get in Touch</h4>
+            <h4 className="text-white uppercase tracking-[0.2em] text-xs font-black mb-8 border-l-4 border-emerald-600 pl-4">Get in Touch</h4>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
-                <MapPin size={20} className="text-gold shrink-0" />
+                <MapPin size={20} className="text-emerald-600 shrink-0" />
                 <div className="text-sm">
-                   <p className="font-bold text-white">N Kapila Silva</p>
-                   <p className="text-white/40">Seeduwa, Sri Lanka</p>
+                   <p className="font-black text-white uppercase tracking-tight">N Kapila Silva</p>
+                   <p className="text-emerald-100/40 font-bold text-xs">Seeduwa, Sri Lanka</p>
                 </div>
               </li>
               <li className="flex items-center gap-4">
-                <Phone size={20} className="text-gold shrink-0" />
-                <a href="tel:+94768743357" className="text-sm text-white/60 hover:text-white transition-colors">+94 76 874 3357</a>
+                <Phone size={20} className="text-emerald-600 shrink-0" />
+                <a href="tel:+94768743357" className="text-xs font-black text-emerald-100/60 hover:text-white transition-colors tracking-widest">+94 76 874 3357</a>
               </li>
               <li className="flex items-center gap-4">
-                <Mail size={20} className="text-gold shrink-0" />
-                <a href="mailto:info@kapitravels.lk" className="text-sm text-white/60 hover:text-white transition-colors">info@kapitravels.lk</a>
+                <Mail size={20} className="text-emerald-600 shrink-0" />
+                <a href="mailto:info@kapitravels.lk" className="text-xs font-black text-emerald-100/60 hover:text-white transition-colors tracking-widest uppercase">info@kapitravels.lk</a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-white/20 text-xs text-center md:text-left">
-            © {new Date().getFullYear()} Kapi Travels and Tours. All rights reserved. 
-            <span className="ml-2">Designed by Antigravity.</span>
+        <div className="pt-10 border-t border-emerald-900 flex flex-col md:flex-row justify-between items-center gap-8">
+          <p className="text-emerald-100/20 text-[10px] font-black uppercase tracking-widest text-center md:text-left">
+            © {new Date().getFullYear()} Kapee Travels and Tours. All rights reserved. 
+            <span className="ml-4 text-emerald-100/40">Powered by Antigravity AI.</span>
           </p>
-          <div className="flex gap-8 text-white/20 text-[10px] uppercase tracking-widest font-bold">
-            <Link href="#" className="hover:text-gold transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-gold transition-colors">Cookies</Link>
+          <div className="flex gap-10 text-emerald-100/20 text-[10px] uppercase tracking-widest font-black">
+            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
