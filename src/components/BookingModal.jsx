@@ -2,44 +2,62 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Car, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2 } from 'lucide-react';
 
 const vehicles = [
+  { 
+    id: 'minicar', 
+    name: 'Economy Car', 
+    passengers: 3, 
+    luggage: 2, 
+    rate: 80, 
+    image: '/vehicles/minicar.png',
+    description: 'Affordable & efficient city rides.'
+  },
   { 
     id: 'sedan', 
     name: 'Luxury Sedan', 
     passengers: 3, 
-    luggage: 2, 
+    luggage: 3, 
     rate: 120, 
-    image: '/luxury_sedan_kapee_1778135916724.png',
+    image: '/vehicles/sedancar.png',
     description: 'Perfect for couples or small families.'
   },
   { 
-    id: 'suv', 
-    name: 'Premium SUV', 
+    id: 'vezel', 
+    name: 'Honda Vezel SUV', 
     passengers: 4, 
-    luggage: 4, 
-    rate: 180, 
-    image: '/premium_suv_kapee_1778135986240.png',
-    description: 'Luxury and power for any terrain.'
+    luggage: 3, 
+    rate: 150, 
+    image: '/vehicles/Hondavezel.png',
+    description: 'Compact SUV with premium comfort.'
   },
   { 
     id: 'van', 
-    name: 'Luxury Van', 
-    passengers: 7, 
-    luggage: 6, 
-    rate: 150, 
-    image: '/hero-bg.png', // Placeholder
-    description: 'Spacious comfort for groups.'
+    name: 'Mini Van (5 Seat)', 
+    passengers: 5, 
+    luggage: 5, 
+    rate: 140, 
+    image: '/vehicles/minivan5seat.png',
+    description: 'Spacious for families with luggage.'
   },
   { 
-    id: 'minibus', 
-    name: 'Mini Bus', 
-    passengers: 12, 
-    luggage: 10, 
-    rate: 250, 
-    image: '/hero-bg.png', // Placeholder
-    description: 'For corporate groups and large families.'
+    id: 'highroof', 
+    name: 'Toyota High Roof', 
+    passengers: 8, 
+    luggage: 8, 
+    rate: 180, 
+    image: '/vehicles/toyota-highroof.png',
+    description: 'Group travel with maximum space.'
+  },
+  { 
+    id: 'coaster', 
+    name: 'Coaster Bus', 
+    passengers: 20, 
+    luggage: 15, 
+    rate: 300, 
+    image: '/vehicles/costerbus.png',
+    description: 'Corporate groups & large parties.'
   }
 ];
 
@@ -60,6 +78,7 @@ const BookingModal = () => {
   });
 
   const exchangeRates = { LKR: 1, USD: 0.0033, EUR: 0.0031 };
+  const currencySymbols = { LKR: 'Rs.', USD: '$', EUR: '€' };
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -71,7 +90,6 @@ const BookingModal = () => {
   const handleBack = () => setStep(step - 1);
 
   const calculatePrice = (baseRate) => {
-    // Mock distance for demonstration (normally would use Google Maps API)
     const mockDistance = 50; 
     const priceLKR = baseRate * mockDistance;
     return (priceLKR * exchangeRates[currency]).toLocaleString(undefined, {
@@ -81,7 +99,7 @@ const BookingModal = () => {
   };
 
   const generateWhatsApp = () => {
-    const text = `*New Booking Request - Kapi Travels*%0A%0A` +
+    const text = `*New Booking Request - Kapee Tours*%0A%0A` +
       `*Vehicle:* ${formData.vehicle.name}%0A` +
       `*Pickup:* ${formData.pickup}%0A` +
       `*Destination:* ${formData.destination}%0A` +
@@ -104,55 +122,54 @@ const BookingModal = () => {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-primary/90 backdrop-blur-md"
+        className="absolute inset-0 bg-black/40 backdrop-blur-md"
         onClick={() => setIsOpen(false)}
       />
 
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="bg-primary-light w-full max-w-4xl rounded-3xl overflow-hidden relative z-10 border border-white/10 shadow-2xl flex flex-col md:flex-row h-full max-h-[85vh]"
+        className="bg-white w-full max-w-4xl rounded-[2rem] overflow-hidden relative z-10 border border-slate-100 shadow-2xl flex flex-col md:flex-row max-h-[90vh]"
       >
-        {/* Sidebar Info (Desktop) */}
-        <div className="hidden md:flex md:w-1/3 bg-gold/5 p-8 flex-col justify-between border-r border-white/5">
+        {/* Sidebar */}
+        <div className="hidden md:flex md:w-1/3 bg-emerald-950 p-8 flex-col justify-between">
           <div>
-            <h2 className="text-3xl font-serif font-bold text-gold mb-2">Book Your Ride</h2>
-            <p className="text-white/60 text-sm">Experience Sri Lanka with premium comfort and professional service.</p>
+            <h2 className="text-3xl font-serif font-black text-white mb-2 tracking-tighter">Book Your Ride</h2>
+            <p className="text-emerald-100/60 text-sm font-medium">Experience Sri Lanka with premium comfort.</p>
             
             <div className="mt-10 space-y-6">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold">
+                <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-emerald-400">
                   <CheckCircle2 size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">Safe & Reliable</p>
-                  <p className="text-xs text-white/40">Licensed professional drivers</p>
+                  <p className="text-sm font-black text-white">Safe & Reliable</p>
+                  <p className="text-xs text-emerald-100/40 font-bold">Licensed professional drivers</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold">
+                <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-emerald-400">
                   <CheckCircle2 size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">Transparent Pricing</p>
-                  <p className="text-xs text-white/40">No hidden costs, multi-currency</p>
+                  <p className="text-sm font-black text-white">Multi-Currency</p>
+                  <p className="text-xs text-emerald-100/40 font-bold">LKR, USD & EUR pricing</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-             <p className="text-[10px] uppercase tracking-widest text-white/40 mb-2">Contact Person</p>
-             <p className="font-bold text-gold">N Kapila Silva</p>
-             <p className="text-xs text-white/60">Seeduwa, Sri Lanka</p>
+          <div className="p-4 bg-emerald-900 rounded-2xl border border-emerald-800">
+             <p className="text-[10px] uppercase tracking-widest text-emerald-400 font-black mb-2">Contact Person</p>
+             <p className="font-black text-white">N Kapila Silva</p>
+             <p className="text-xs text-emerald-100/40 font-bold">Seeduwa, Sri Lanka</p>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 p-6 md:p-10 overflow-y-auto relative">
           <button 
-            className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors"
+            className="absolute top-6 right-6 text-slate-300 hover:text-slate-900 transition-colors"
             onClick={() => setIsOpen(false)}
           >
             <X size={24} />
@@ -163,8 +180,8 @@ const BookingModal = () => {
             {[1, 2, 3].map(i => (
               <div 
                 key={i} 
-                className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                  step >= i ? 'bg-gold' : 'bg-white/10'
+                className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
+                  step >= i ? 'bg-emerald-600' : 'bg-slate-100'
                 }`} 
               />
             ))}
@@ -178,15 +195,15 @@ const BookingModal = () => {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -20, opacity: 0 }}
               >
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-serif font-bold">Select Your Vehicle</h3>
-                  <div className="flex bg-white/5 p-1 rounded-lg border border-white/10">
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Select Vehicle</h3>
+                  <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
                     {['LKR', 'USD', 'EUR'].map(curr => (
                       <button
                         key={curr}
                         onClick={() => setCurrency(curr)}
-                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
-                          currency === curr ? 'bg-gold text-primary' : 'text-white/60'
+                        className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all tracking-widest ${
+                          currency === curr ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400'
                         }`}
                       >
                         {curr}
@@ -203,24 +220,22 @@ const BookingModal = () => {
                         setFormData({ ...formData, vehicle: v });
                         handleNext();
                       }}
-                      className={`group p-4 rounded-2xl border-2 transition-all cursor-pointer ${
-                        formData.vehicle?.id === v.id ? 'border-gold bg-gold/5' : 'border-white/5 bg-white/5 hover:border-white/20'
-                      }`}
+                      className="group p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 hover:shadow-xl"
                     >
-                      <div className="h-32 rounded-xl overflow-hidden mb-4 relative">
-                        <img src={v.image} alt={v.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                        <div className="absolute top-2 right-2 bg-primary/80 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold text-gold">
-                           {currency} {calculatePrice(v.rate)}
+                      <div className="h-28 rounded-xl overflow-hidden mb-3 relative bg-slate-50 flex items-center justify-center">
+                        <img src={v.image} alt={v.name} className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+                        <div className="absolute top-2 right-2 bg-emerald-600 px-2 py-1 rounded-lg text-[10px] font-black text-white">
+                           {currencySymbols[currency]} {calculatePrice(v.rate)}
                         </div>
                       </div>
                       <div className="flex justify-between items-center mb-1">
-                        <h4 className="font-bold text-lg">{v.name}</h4>
-                        <div className="flex gap-3 text-white/40">
-                          <span className="flex items-center gap-1 text-xs"><Users size={12}/>{v.passengers}</span>
-                          <span className="flex items-center gap-1 text-xs"><Briefcase size={12}/>{v.luggage}</span>
+                        <h4 className="font-black text-emerald-950 text-sm">{v.name}</h4>
+                        <div className="flex gap-3 text-slate-400">
+                          <span className="flex items-center gap-1 text-[10px] font-bold"><Users size={10}/>{v.passengers}</span>
+                          <span className="flex items-center gap-1 text-[10px] font-bold"><Briefcase size={10}/>{v.luggage}</span>
                         </div>
                       </div>
-                      <p className="text-xs text-white/40 leading-relaxed">{v.description}</p>
+                      <p className="text-[11px] text-slate-400 font-medium">{v.description}</p>
                     </div>
                   ))}
                 </div>
@@ -234,30 +249,30 @@ const BookingModal = () => {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -20, opacity: 0 }}
               >
-                <h3 className="text-2xl font-serif font-bold mb-8">Trip Details</h3>
+                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter mb-8">Trip Details</h3>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold">Pickup Location</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pickup Location</label>
                       <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gold" size={18} />
+                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} />
                         <input 
                           type="text" 
-                          placeholder="Colombo Airport, Hotel, etc." 
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 focus:border-gold outline-none transition-all"
+                          placeholder="Airport, Hotel, etc." 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                           value={formData.pickup}
                           onChange={(e) => setFormData({...formData, pickup: e.target.value})}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold">Destination</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Destination</label>
                       <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input 
                           type="text" 
                           placeholder="Ella, Sigiriya, etc." 
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 focus:border-gold outline-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                           value={formData.destination}
                           onChange={(e) => setFormData({...formData, destination: e.target.value})}
                         />
@@ -267,46 +282,46 @@ const BookingModal = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold">Date</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Date</label>
                       <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input 
                           type="date" 
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 focus:border-gold outline-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                           value={formData.date}
                           onChange={(e) => setFormData({...formData, date: e.target.value})}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold">Time</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Time</label>
                       <div className="relative">
-                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input 
                           type="time" 
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 focus:border-gold outline-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                           value={formData.time}
                           onChange={(e) => setFormData({...formData, time: e.target.value})}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold">Passengers</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Passengers</label>
                       <div className="relative">
-                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <select 
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 focus:border-gold outline-none transition-all appearance-none"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all appearance-none text-slate-900 font-medium"
                           value={formData.passengers}
                           onChange={(e) => setFormData({...formData, passengers: e.target.value})}
                         >
-                          {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n} className="bg-primary text-white">{n} Persons</option>)}
+                          {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n} Persons</option>)}
                         </select>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex justify-between pt-6">
-                    <button onClick={handleBack} className="flex items-center gap-2 text-white/40 hover:text-white transition-all font-bold">
+                    <button onClick={handleBack} className="flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-all font-black text-xs uppercase tracking-widest">
                       <ChevronLeft size={20} /> Back
                     </button>
                     <button 
@@ -328,36 +343,36 @@ const BookingModal = () => {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -20, opacity: 0 }}
               >
-                <h3 className="text-2xl font-serif font-bold mb-8">Confirm Booking</h3>
+                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter mb-8">Confirm Booking</h3>
                 <div className="space-y-6">
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
+                    <div className="flex justify-between items-center border-b border-slate-100 pb-4">
                       <div>
-                        <p className="text-xs text-white/40 uppercase tracking-widest font-bold">Selected Vehicle</p>
-                        <p className="font-bold text-lg text-gold">{formData.vehicle?.name}</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Vehicle</p>
+                        <p className="font-black text-lg text-emerald-600">{formData.vehicle?.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-white/40 uppercase tracking-widest font-bold">Estimated Price</p>
-                        <p className="font-bold text-xl">{currency} {calculatePrice(formData.vehicle?.rate)}</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Estimated</p>
+                        <p className="font-black text-xl text-emerald-950">{currencySymbols[currency]} {calculatePrice(formData.vehicle?.rate)}</p>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-white/40 text-[10px] uppercase font-bold">From</p>
-                        <p>{formData.pickup}</p>
+                        <p className="text-slate-400 text-[10px] uppercase font-black">From</p>
+                        <p className="text-slate-900 font-bold">{formData.pickup}</p>
                       </div>
                       <div>
-                        <p className="text-white/40 text-[10px] uppercase font-bold">To</p>
-                        <p>{formData.destination}</p>
+                        <p className="text-slate-400 text-[10px] uppercase font-black">To</p>
+                        <p className="text-slate-900 font-bold">{formData.destination}</p>
                       </div>
                       <div>
-                        <p className="text-white/40 text-[10px] uppercase font-bold">Date & Time</p>
-                        <p>{formData.date} @ {formData.time}</p>
+                        <p className="text-slate-400 text-[10px] uppercase font-black">Date & Time</p>
+                        <p className="text-slate-900 font-bold">{formData.date} @ {formData.time}</p>
                       </div>
                       <div>
-                        <p className="text-white/40 text-[10px] uppercase font-bold">Passengers</p>
-                        <p>{formData.passengers} Persons</p>
+                        <p className="text-slate-400 text-[10px] uppercase font-black">Passengers</p>
+                        <p className="text-slate-900 font-bold">{formData.passengers} Persons</p>
                       </div>
                     </div>
                   </div>
@@ -367,36 +382,36 @@ const BookingModal = () => {
                       <input 
                         type="text" 
                         placeholder="Your Full Name" 
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:border-gold outline-none transition-all"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                       />
                       <input 
                         type="tel" 
                         placeholder="WhatsApp Number" 
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:border-gold outline-none transition-all"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
                       />
                     </div>
                     <textarea 
                       placeholder="Special Requirements (Optional)" 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:border-gold outline-none transition-all h-24 resize-none"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all h-24 resize-none text-slate-900 font-medium"
                       value={formData.notes}
                       onChange={(e) => setFormData({...formData, notes: e.target.value})}
                     ></textarea>
                   </div>
 
                   <div className="flex justify-between pt-6">
-                    <button onClick={handleBack} className="flex items-center gap-2 text-white/40 hover:text-white transition-all font-bold">
+                    <button onClick={handleBack} className="flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-all font-black text-xs uppercase tracking-widest">
                       <ChevronLeft size={20} /> Back
                     </button>
                     <button 
                       onClick={generateWhatsApp}
                       disabled={!formData.name || !formData.phone}
-                      className="btn-whatsapp px-10 flex items-center gap-3 disabled:opacity-50"
+                      className="px-10 py-3 bg-[#25D366] text-white font-black rounded-full hover:bg-[#128C7E] transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"
                     >
-                      <Send size={20} /> Confirm on WhatsApp
+                      <Send size={18} /> Confirm on WhatsApp
                     </button>
                   </div>
                 </div>
