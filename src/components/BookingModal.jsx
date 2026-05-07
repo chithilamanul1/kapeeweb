@@ -6,65 +6,44 @@ import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock
 
 const vehicles = [
   { 
-    id: 'minicar', 
-    name: 'Economy Car', 
-    passengers: 3, 
-    luggage: 2, 
-    rate: 80, 
-    image: '/vehicles/minicar.png',
-    description: 'Affordable & efficient city rides.'
-  },
-  { 
     id: 'sedan', 
     name: 'Luxury Sedan', 
     passengers: 3, 
     luggage: 3, 
-    rate: 120, 
+    rate: 25, // Base rate in EUR for Colombo
     image: '/vehicles/sedancar.png',
     description: 'Perfect for couples or small families.'
   },
   { 
-    id: 'vezel', 
-    name: 'Honda Vezel SUV', 
-    passengers: 3, 
-    luggage: 3, 
-    rate: 150, 
-    image: '/vehicles/Hondavezel.png',
-    description: 'Compact SUV with premium comfort.'
-  },
-  { 
     id: 'van', 
-    name: 'Mini Van (5 Seat)', 
-    passengers: 5, 
-    luggage: 5, 
-    rate: 140, 
-    image: '/vehicles/minivan5seat.png',
-    description: 'Spacious for families with luggage.'
-  },
-  { 
-    id: 'highroof', 
-    name: 'Toyota High Roof', 
+    name: 'Spacious Van', 
     passengers: 8, 
     luggage: 8, 
-    rate: 180, 
+    rate: 35, // Approx base rate in EUR
     image: '/vehicles/toyota-highroof.png',
-    description: 'Group travel with maximum space.'
-  },
-  { 
-    id: 'coaster', 
-    name: 'Coaster Bus', 
-    passengers: 20, 
-    luggage: 15, 
-    rate: 300, 
-    image: '/vehicles/costerbus.png',
-    description: 'Corporate groups & large parties.'
+    description: 'Comfortable group travel with ample luggage space.'
   }
 ];
+
+const destinationRates = {
+  'colombo': 25,
+  'galle': 68,
+  'unawatuna': 68,
+  'bossa': 68,
+  'ahangama': 68,
+  'kogala': 68,
+  'bentota': 38,
+  'beruwala': 38,
+  'iduruwa': 38,
+  'kandy': 63,
+  'sigiriya': 63,
+  'habarana': 63
+};
 
 const BookingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [currency, setCurrency] = useState('LKR');
+  const [currency, setCurrency] = useState('EUR'); // Default to EUR as per rates
   const [formData, setFormData] = useState({
     vehicle: null,
     pickup: '',
@@ -78,7 +57,7 @@ const BookingModal = () => {
     notes: ''
   });
 
-  const exchangeRates = { LKR: 1, USD: 0.0033, EUR: 0.0031 };
+  const exchangeRates = { LKR: 320, USD: 1.08, EUR: 1 };
   const currencySymbols = { LKR: 'Rs.', USD: '$', EUR: '€' };
 
   useEffect(() => {
@@ -91,11 +70,28 @@ const BookingModal = () => {
   const handleBack = () => setStep(step - 1);
 
   const calculatePrice = (baseRate) => {
-    const mockDistance = 50; 
-    const priceLKR = baseRate * mockDistance;
-    return (priceLKR * exchangeRates[currency]).toLocaleString(undefined, {
-      minimumFractionDigits: currency === 'LKR' ? 0 : 2,
-      maximumFractionDigits: currency === 'LKR' ? 0 : 2
+    // If destination is recognized, use the destination rate
+    const dest = formData.destination.toLowerCase().trim();
+    let rateEUR = baseRate;
+
+    // Check for destination match
+    for (const [key, value] of Object.entries(destinationRates)) {
+      if (dest.includes(key)) {
+        rateEUR = value;
+        // Adjust for Van (usually +20% or a fixed amount, let's assume +15 EUR for Van if it's a long trip)
+        if (formData.vehicle?.id === 'van') {
+            rateEUR += 15;
+        }
+        break;
+      }
+    }
+
+    // Convert from EUR to target currency
+    const priceTarget = rateEUR * (currency === 'EUR' ? 1 : (currency === 'LKR' ? exchangeRates.LKR : exchangeRates.USD));
+
+    return priceTarget.toLocaleString(undefined, {
+      minimumFractionDigits: currency === 'LKR' ? 0 : 0,
+      maximumFractionDigits: currency === 'LKR' ? 0 : 0
     });
   };
 
@@ -224,7 +220,7 @@ const BookingModal = () => {
                       }}
                       className="group p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 hover:shadow-xl flex flex-col h-full"
                     >
-                      <div className="h-32 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
+                      <div className="h-40 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
                         <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" />
                         <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">
                            {currencySymbols[currency]} {calculatePrice(v.rate)}
@@ -273,7 +269,7 @@ const BookingModal = () => {
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input 
                           type="text" 
-                          placeholder="Ella, Sigiriya, etc." 
+                          placeholder="e.g. Galle, Kandy, Colombo" 
                           className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                           value={formData.destination}
                           onChange={(e) => setFormData({...formData, destination: e.target.value})}
