@@ -15,7 +15,7 @@ const Footer = () => {
                <span className="text-2xl font-serif font-bold text-gold">Kapi Travels</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed">
-              Providing premium travel experiences across the beautiful island of Sri Lanka. From the moment you land to your final departure, we ensure every mile is memorable.
+              <span className="text-white/60 font-bold">Kapee Tours Seeduwa</span> provides premium travel experiences across Sri Lanka. Known as <span className="text-white/60 font-bold">Kapila Tours</span>, we ensure every mile is memorable from arrival to departure.
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:text-gold hover:bg-gold/10 transition-all border border-white/10"><Facebook size={18} /></a>

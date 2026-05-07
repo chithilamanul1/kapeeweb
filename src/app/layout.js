@@ -20,7 +20,18 @@ export const metadata = {
     template: '%s | Kapi Travels'
   },
   description: 'Premium travel agency in Sri Lanka. Airport transfers, custom tours, and corporate travel with N Kapila Silva. Experience Sri Lanka like never before.',
-  keywords: ['travel agency sri lanka', 'airport taxi sri lanka', 'custom tours sri lanka', 'luxury travel sri lanka', 'Kapee travels', 'Sri Lanka tours', 'best travel agent sri lanka'],
+  keywords: [
+    'kapee tours', 
+    'kapila tours', 
+    'tours seeduwa', 
+    'seeduwa tours', 
+    'airport taxi sri lanka', 
+    'travel agency seeduwa', 
+    'custom tours sri lanka', 
+    'luxury travel sri lanka', 
+    'Kapee travels', 
+    'N Kapila Silva tours'
+  ],
   authors: [{ name: 'N Kapila Silva' }],
   creator: 'Kapi Travels',
   metadataBase: new URL('https://kapitravels.lk'), // Update to real domain

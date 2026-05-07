@@ -6,8 +6,8 @@ import { Award, ShieldCheck, Clock, ThumbsUp } from 'lucide-react';
 const stats = [
   { icon: <ShieldCheck size={32} />, value: '100%', label: 'Safety Record', desc: 'Secure & insured travel' },
   { icon: <ThumbsUp size={32} />, value: '1500+', label: 'Happy Clients', desc: 'Verified 5-star reviews' },
-  { icon: <Clock size={32} />, value: '24/7', label: 'Availability', desc: 'Round-the-clock support' },
-  { icon: <Award size={32} />, value: '15+', label: 'Years Experience', desc: 'Expert local knowledge' },
+  { icon: <Clock size={32} />, value: '24/7', label: 'Availability', desc: 'Seeduwa based rapid response' },
+  { icon: <Award size={32} />, value: '15+', label: 'Kapila Tours', desc: 'Trusted local travel expertise' },
 ];
 
 const WhyChooseUs = () => {

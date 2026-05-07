@@ -36,8 +36,9 @@ const Hero = () => {
             <span className="text-gradient">Comfort & Style</span>
           </h1>
           <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-            Discover the enchanging beauty of the island with Kapi Travels. 
-            From airport transfers to bespoke island-wide tours, we ensure your journey is as remarkable as the destination.
+            Discover the enchanting beauty of the island with <span className="text-gold font-medium">Kapee Tours</span>. 
+            Based in Seeduwa, we provide elite airport transfers and bespoke island-wide tours, 
+            ensuring your journey is as remarkable as the destination.
           </p>
         </motion.div>
 
