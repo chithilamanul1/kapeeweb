@@ -72,6 +72,18 @@ const BookingModal = () => {
   const [map, setMap] = useState(null);
   const [directionsRenderer, setDirectionsRenderer] = useState(null);
 
+  // Listen for external open trigger
+  useEffect(() => {
+    const handleOpen = (e) => {
+      setIsOpen(true);
+      if (e.detail && e.detail.destination) {
+        setFormData(prev => ({ ...prev, destination: e.detail.destination }));
+      }
+    };
+    window.addEventListener('openBooking', handleOpen);
+    return () => window.removeEventListener('openBooking', handleOpen);
+  }, []);
+
   // Load Google Maps Script
   useEffect(() => {
     if (window.google) {

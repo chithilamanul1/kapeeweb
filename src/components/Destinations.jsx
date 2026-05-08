@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { MapPin, ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 const destinations = [
   {
@@ -73,9 +74,12 @@ const Destinations = () => {
                 <p className="text-white/80 text-sm mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 leading-relaxed font-medium">
                   {dest.description}
                 </p>
-                <div className="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest bg-emerald-600/80 backdrop-blur-md w-fit px-6 py-3 rounded-full hover:bg-emerald-600 transition-all">
+                <Link 
+                  href={`/destinations/${dest.name.toLowerCase()}`}
+                  className="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest bg-emerald-600/80 backdrop-blur-md w-fit px-6 py-3 rounded-full hover:bg-emerald-600 transition-all"
+                >
                   Explore More <ArrowUpRight size={16} strokeWidth={3} />
-                </div>
+                </Link>
               </div>
 
               <div className="absolute inset-0 border-2 border-white/10 group-hover:border-emerald-500/30 transition-colors duration-500 rounded-[2.5rem]" />

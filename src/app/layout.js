@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
 import { Inter, Playfair_Display, Caveat } from 'next/font/google';
+import BookingModal from '@/components/BookingModal';
+import FloatingWhatsApp from '@/components/FloatingWhatsApp';
 import './globals.css';
 
 const inter = Inter({ 
@@ -98,6 +100,8 @@ export default function RootLayout({ children }) {
       <body className="font-sans antialiased text-white selection:bg-gold/30" suppressHydrationWarning>
         <Suspense fallback={<div className="h-screen bg-primary flex items-center justify-center text-gold font-serif text-2xl">Loading...</div>}>
           {children}
+          <BookingModal />
+          <FloatingWhatsApp />
         </Suspense>
       </body>
     </html>

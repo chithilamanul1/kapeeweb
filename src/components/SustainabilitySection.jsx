@@ -18,7 +18,7 @@ const SustainabilitySection = () => {
               className="col-span-7 h-full relative rounded-[2rem] overflow-hidden shadow-2xl"
             >
               <img 
-                src="https://images.unsplash.com/photo-1581012733301-f991331ed615?auto=format&fit=crop&q=80&w=800" 
+                src="/images/elephant.png" 
                 alt="Elephant in Sri Lanka" 
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
               />
@@ -34,7 +34,7 @@ const SustainabilitySection = () => {
                 className="h-2/3 rounded-[2rem] overflow-hidden shadow-xl"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&q=80&w=600" 
+                  src="/images/mountain.png" 
                   alt="Sri Lanka Mountains" 
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
                 />
@@ -47,7 +47,7 @@ const SustainabilitySection = () => {
                 className="h-1/3 rounded-[2rem] overflow-hidden shadow-xl"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1584810359583-96fc3448beaa?auto=format&fit=crop&q=80&w=600" 
+                  src="/images/waterfall.png" 
                   alt="Sri Lanka Waterfall" 
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
                 />
