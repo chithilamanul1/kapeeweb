@@ -99,7 +99,7 @@ const BookingModal = () => {
 
   // Initialize Autocomplete
   useEffect(() => {
-    if (!googleLoaded) return;
+    if (!googleLoaded || !isOpen) return;
 
     const options = {
       componentRestrictions: { country: "lk" },
@@ -107,115 +107,48 @@ const BookingModal = () => {
       strictBounds: false,
     };
 
-    const pickupAutocomplete = new window.google.maps.places.Autocomplete(pickupRef.current, options);
-    const destAutocomplete = new window.google.maps.places.Autocomplete(destRef.current, options);
+    if (pickupRef.current) {
+        const pickupAutocomplete = new window.google.maps.places.Autocomplete(pickupRef.current, options);
+        pickupAutocomplete.addListener("place_changed", () => {
+          const place = pickupAutocomplete.getPlace();
+          if (place.formatted_address) {
+            setFormData(prev => ({ ...prev, pickup: place.formatted_address }));
+          }
+        });
+    }
 
-    pickupAutocomplete.addListener("place_changed", () => {
-      const place = pickupAutocomplete.getPlace();
-      if (place.formatted_address) {
-        setFormData(prev => ({ ...prev, pickup: place.formatted_address }));
-      }
-    });
+    if (destRef.current) {
+        const destAutocomplete = new window.google.maps.places.Autocomplete(destRef.current, options);
+        destAutocomplete.addListener("place_changed", () => {
+          const place = destAutocomplete.getPlace();
+          if (place.formatted_address) {
+            setFormData(prev => ({ ...prev, destination: place.formatted_address }));
+          }
+        });
+    }
+  }, [googleLoaded, isOpen, step]);
 
-    destAutocomplete.addListener("place_changed", () => {
-      const place = destAutocomplete.getPlace();
-      if (place.formatted_address) {
-        setFormData(prev => ({ ...prev, destination: place.formatted_address }));
-      }
-    });
-  }, [googleLoaded]);
-
-  // Initialize Map when step 2 or 3 is active
+  // Initialize Map when step 3 is active
   useEffect(() => {
-    if (googleLoaded && mapRef.current && !map && (step === 2 || step === 3)) {
+    if (googleLoaded && mapRef.current && !map && step === 3) {
       const newMap = new window.google.maps.Map(mapRef.current, {
         center: { lat: 7.8731, lng: 80.7718 }, // Sri Lanka center
         zoom: 7,
         disableDefaultUI: true,
         styles: [
-            {
-              "featureType": "all",
-              "elementType": "geometry.fill",
-              "stylers": [{ "weight": "2.00" }]
-            },
-            {
-              "featureType": "all",
-              "elementType": "geometry.stroke",
-              "stylers": [{ "color": "#9c9c9c" }]
-            },
-            {
-              "featureType": "all",
-              "elementType": "labels.text",
-              "stylers": [{ "visibility": "on" }]
-            },
-            {
-              "featureType": "landscape",
-              "elementType": "all",
-              "stylers": [{ "color": "#f2f2f2" }]
-            },
-            {
-              "featureType": "poi",
-              "elementType": "all",
-              "stylers": [{ "visibility": "off" }]
-            },
-            {
-              "featureType": "road",
-              "elementType": "all",
-              "stylers": [{ "saturation": -100 }, { "lightness": 45 }]
-            },
-            {
-              "featureType": "road.highway",
-              "elementType": "all",
-              "stylers": [{ "visibility": "simplified" }]
-            },
-            {
-              "featureType": "road.arterial",
-              "elementType": "labels.icon",
-              "stylers": [{ "visibility": "off" }]
-            },
-            {
-              "featureType": "transit",
-              "elementType": "all",
-              "stylers": [{ "visibility": "off" }]
-            },
-            {
-              "featureType": "water",
-              "elementType": "all",
-              "stylers": [{ "color": "#46bcec" }, { "visibility": "on" }]
-            },
-            {
-                "featureType": "water",
-                "elementType": "geometry.fill",
-                "stylers": [{ "color": "#c8d7d4" }]
-            },
-            {
-                "featureType": "road.highway",
-                "elementType": "geometry.fill",
-                "stylers": [{ "color": "#ebebeb" }]
-            }
-          ]
+            { "featureType": "all", "elementType": "geometry.fill", "stylers": [{ "weight": "2.00" }] },
+            { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] },
+            { "featureType": "water", "elementType": "geometry.fill", "stylers": [{ "color": "#c8d7d4" }] }
+        ]
       });
       const renderer = new window.google.maps.DirectionsRenderer({
         map: newMap,
-        polylineOptions: {
-          strokeColor: "#10b981",
-          strokeWeight: 5,
-          strokeOpacity: 0.8
-        }
+        polylineOptions: { strokeColor: "#10b981", strokeWeight: 5, strokeOpacity: 0.8 }
       });
       setMap(newMap);
       setDirectionsRenderer(renderer);
     }
   }, [googleLoaded, mapRef, map, step]);
-
-  useEffect(() => {
-    const handleOpen = () => setIsOpen(true);
-    window.addEventListener('openBooking', handleOpen);
-    return () => window.removeEventListener('openBooking', handleOpen);
-  }, []);
-
-  const handleNext = () => setStep(step + 1);
-  const handleBack = () => setStep(step - 1);
 
   const calculateDistance = useCallback(async () => {
     if (!formData.pickup || !formData.destination || !googleLoaded) return;
@@ -235,66 +168,47 @@ const BookingModal = () => {
             if (directionsRenderer) {
                 directionsRenderer.setDirections(result);
             }
-            
             const distance = result.routes[0].legs[0].distance.value / 1000;
             setDistanceInfo({ 
               km: Math.ceil(distance), 
               text: `${Math.ceil(distance)} KM trip` 
             });
           } else {
-            console.error("Directions request failed due to " + status);
-            setDistanceInfo({ km: 0, text: 'Route not found' });
+            // Fallback estimation
+            const destLower = formData.destination.toLowerCase();
+            const fixedMatch = FIXED_RATES.find(fr => fr.keywords.some(k => destLower.includes(k)));
+            const estimatedKm = fixedMatch ? 120 : 100;
+            setDistanceInfo({ km: estimatedKm, text: `${estimatedKm} KM (Estimated)` });
           }
           setIsCalculating(false);
         }
       );
     } catch (error) {
-      console.error("Google Maps Directions error:", error);
       setIsCalculating(false);
     }
   }, [formData.pickup, formData.destination, googleLoaded, directionsRenderer]);
 
   useEffect(() => {
-    if (step === 2 || step === 3) {
-      calculateDistance();
-    }
+    if (step === 3) calculateDistance();
   }, [step, calculateDistance]);
 
   const calculatePrice = (vehicle) => {
     if (!vehicle) return 0;
-    
     let rateEUR = vehicle.minRate;
-    const dest = formData.destination.toLowerCase();
     const isAirportPickup = formData.pickup.toLowerCase().includes('airport') || formData.pickup.toLowerCase().includes('bia');
-
-    // Check for fixed rates if starting from airport
-    let fixedMatch = null;
-    if (isAirportPickup) {
-      fixedMatch = FIXED_RATES.find(zone => 
-        zone.keywords.some(kw => dest.includes(kw))
-      );
-    }
+    
+    let fixedMatch = isAirportPickup ? FIXED_RATES.find(zone => zone.keywords.some(kw => formData.destination.toLowerCase().includes(kw))) : null;
 
     if (fixedMatch) {
       rateEUR = fixedMatch.rate * vehicle.multiplier;
     } else if (distanceInfo.km > 0) {
-      const distRate = distanceInfo.km * vehicle.ratePerKm;
-      rateEUR = Math.max(vehicle.minRate, distRate);
+      rateEUR = Math.max(vehicle.minRate, distanceInfo.km * vehicle.ratePerKm);
     }
 
-    // Apply Multi-Day Deal if days > 1 or specific keywords match
-    const isMultiDay = formData.days > 1;
-    if (isMultiDay) {
-       rateEUR = 40 * formData.days;
-    }
+    if (formData.days > 1) rateEUR = 40 * formData.days;
 
-    // Currency conversion
     const priceTarget = rateEUR * (currency === 'EUR' ? 1 : (currency === 'LKR' ? exchangeRates.LKR : exchangeRates.USD));
-
-    return priceTarget.toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    });
+    return priceTarget.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   };
 
   const generateWhatsApp = () => {
@@ -308,14 +222,12 @@ const BookingModal = () => {
       `Nameboard.   : ${formData.nameboard || 'None'}%0A` +
       `Flight.       : ${formData.flight || 'N/A'}%0A` +
       `Vehicle.    : ${formData.vehicle?.name || 'Any'}%0A` +
-      `Distance. : ${distanceInfo.km} KM%0A` +
       `Price.       : ${currencySymbols[currency]} ${calculatePrice(formData.vehicle)}%0A` +
       `Drop off    : ${formData.destination}%0A` +
       `Contact No : ${formData.phone}%0A%0A` +
       `*Note: Customers must pay for fuel separately.*%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
     
-    // Trigger email confirmation
     fetch('/api/booking', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -324,7 +236,7 @@ const BookingModal = () => {
 
     if (typeof window !== 'undefined') {
       window.open(`https://wa.me/94768743357?text=${text}`, '_blank');
-      setStep(4); // Move to receipt step
+      setStep(4);
     }
   };
 
@@ -332,458 +244,132 @@ const BookingModal = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/40 backdrop-blur-md"
-        onClick={() => setIsOpen(false)}
-      />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setIsOpen(false)} />
 
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         className="bg-white w-full max-w-4xl rounded-[2rem] overflow-hidden relative z-10 border border-slate-100 shadow-2xl flex flex-col md:flex-row max-h-[90vh]"
       >
-        {/* Sidebar */}
         <div className="hidden md:flex md:w-1/3 bg-emerald-950 p-8 flex-col justify-between">
           <div>
             <h2 className="text-3xl font-serif font-black text-white mb-2 tracking-tighter">Book Your Ride</h2>
-            <p className="text-emerald-100/60 text-sm font-medium">Experience Sri Lanka with premium comfort.</p>
-            
             <div className="mt-10 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 size={20} />
-                </div>
-                <div>
+               <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-emerald-400"><CheckCircle2 size={20} /></div>
                   <p className="text-sm font-black text-white">Smart Pricing</p>
-                  <p className="text-xs text-emerald-100/40 font-bold">Real-time distance calculation</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 size={20} />
-                </div>
-                <div>
-                  <p className="text-sm font-black text-white">Multi-Currency</p>
-                  <p className="text-xs text-emerald-100/40 font-bold">LKR, USD & EUR support</p>
-                </div>
-              </div>
+               </div>
             </div>
           </div>
-
           <div className="p-4 bg-emerald-900 rounded-2xl border border-emerald-800">
-             <p className="text-[10px] uppercase tracking-widest text-emerald-400 font-black mb-2">Contact Person</p>
+             <p className="text-[10px] uppercase tracking-widest text-emerald-400 font-black mb-1">Driver</p>
              <p className="font-black text-white">N Kapila Silva</p>
-             <p className="text-xs text-emerald-100/40 font-bold">Seeduwa, Sri Lanka</p>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-6 md:p-10 overflow-y-auto relative">
-          <button 
-            className="absolute top-6 right-6 text-slate-300 hover:text-slate-900 transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            <X size={24} />
-          </button>
+        <div className="flex-1 p-6 md:p-10 overflow-y-auto relative text-slate-900">
+          <button className="absolute top-6 right-6 text-slate-300 hover:text-slate-900" onClick={() => setIsOpen(false)}><X size={24} /></button>
 
-          {/* Progress bar */}
           <div className="flex gap-2 mb-10">
-            {[1, 2, 3, 4].map(i => (
-              <div 
-                key={i} 
-                className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
-                  step >= i ? 'bg-emerald-600' : 'bg-slate-100'
-                }`} 
-              />
-            ))}
+            {[1, 2, 3, 4].map(i => <div key={i} className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${step >= i ? 'bg-emerald-600' : 'bg-slate-100'}`} />)}
           </div>
 
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -20, opacity: 0 }}
-              >
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Select Vehicle</h3>
-                  <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
-                    {['LKR', 'USD', 'EUR'].map(curr => (
-                      <button
-                        key={curr}
-                        onClick={() => setCurrency(curr)}
-                        className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all tracking-widest ${
-                          currency === curr ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400'
-                        }`}
-                      >
-                        {curr}
-                      </button>
-                    ))}
+              <motion.div key="step1" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-8">
+                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Trip Essentials</h3>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pickup</label>
+                       <div className="relative"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} /><input ref={pickupRef} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none" value={formData.pickup} onChange={(e) => setFormData({...formData, pickup: e.target.value})} /></div>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Destination</label>
+                       <div className="relative"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} /><input ref={destRef} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none font-bold" value={formData.destination} onChange={(e) => setFormData({...formData, destination: e.target.value})} /></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Trip Duration (Days)</label>
+                       <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-1">
+                          {[1, 2, 3, 4, 5, 7].map(d => <button key={d} onClick={() => setFormData({...formData, days: d})} className={`flex-1 py-2 text-xs font-black rounded-lg ${formData.days === d ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}>{d}</button>)}
+                       </div>
+                       <p className="text-[9px] text-emerald-600 font-black uppercase">{formData.days > 1 ? `Multi-Day: €40 x ${formData.days} Days` : 'Standard Rates Apply'}</p>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Passengers</label>
+                       <select className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 outline-none" value={formData.passengers} onChange={(e) => setFormData({...formData, passengers: parseInt(e.target.value)})}>
+                          {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n} Pax</option>)}
+                       </select>
+                    </div>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {vehicles.map((v) => (
-                    <div 
-                      key={v.id}
-                      onClick={() => {
-                        setFormData({ ...formData, vehicle: v });
-                        handleNext();
-                      }}
-                      className="group p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 hover:shadow-xl flex flex-col h-full"
-                    >
-                      <div className="h-40 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
-                        <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" />
-                        <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">
-                           From {currencySymbols[currency]} {calculatePrice(v)}
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center mb-1 mt-auto">
-                        <h4 className="font-black text-emerald-950 text-sm">{v.name}</h4>
-                        <div className="flex gap-3 text-slate-400">
-                          <span className="flex items-center gap-1 text-[10px] font-bold"><Users size={10}/>{v.passengers}</span>
-                          <span className="flex items-center gap-1 text-[10px] font-bold"><Briefcase size={10}/>{v.luggage}</span>
-                        </div>
-                      </div>
-                      <p className="text-[11px] text-slate-400 font-medium">{v.description}</p>
-                    </div>
-                  ))}
-                </div>
+                <button onClick={() => setStep(2)} disabled={!formData.destination} className="w-full py-4 bg-emerald-950 text-white font-black rounded-full shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest">Choose Vehicle <ChevronRight size={18} /></button>
               </motion.div>
             )}
 
             {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -20, opacity: 0 }}
-              >
-                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter mb-4">Trip Details</h3>
-                
-                {/* Campaign Info Box */}
-                <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl mb-6 flex items-start gap-3">
-                  <Zap size={18} className="text-emerald-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-[10px] font-black text-emerald-950 uppercase tracking-widest">Special Campaign Active</p>
-                    <p className="text-[11px] text-emerald-700 font-medium leading-tight mt-1">
-                      One-day trip? We only charge a <span className="font-bold">€40 Flat Charge</span> with <span className="font-bold underline">Unlimited Kilometers</span>. Customer pays for fuel separately.
-                    </p>
-                  </div>
+              <motion.div key="step2" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }}>
+                <div className="flex justify-between items-center mb-8">
+                   <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Select Vehicle</h3>
+                   <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
+                     {['LKR', 'USD', 'EUR'].map(curr => <button key={curr} onClick={() => setCurrency(curr)} className={`px-3 py-1.5 text-[10px] font-black rounded-lg tracking-widest ${currency === curr ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400'}`}>{curr}</button>)}
+                   </div>
                 </div>
-
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pickup Location</label>
-                      <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} />
-                        <input 
-                          ref={pickupRef}
-                          type="text" 
-                          placeholder="Airport, Hotel, etc." 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                          value={formData.pickup}
-                          onChange={(e) => setFormData({...formData, pickup: e.target.value})}
-                        />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {vehicles.map((v) => (
+                    <div key={v.id} onClick={() => { setFormData({ ...formData, vehicle: v }); setStep(3); }} className="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 flex flex-col h-full">
+                      <div className="h-40 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
+                        <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain" />
+                        <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">From {currencySymbols[currency]} {calculatePrice(v)}</div>
                       </div>
+                      <h4 className="font-black text-emerald-950 text-sm mb-1">{v.name}</h4>
+                      <p className="text-[11px] text-slate-400 font-medium">{v.description}</p>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Destination</label>
-                      <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          ref={destRef}
-                          type="text" 
-                          placeholder="e.g. Galle, Kandy, Colombo" 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                          value={formData.destination}
-                          onChange={(e) => setFormData({...formData, destination: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Visual Map Preview */}
-                  <div className="w-full h-48 md:h-64 rounded-3xl bg-slate-100 overflow-hidden relative border border-slate-200">
-                    <div ref={mapRef} className="w-full h-full" />
-                    {!formData.destination && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-50/50 backdrop-blur-sm">
-                            <MapIcon size={32} className="mb-2 opacity-20" />
-                            <p className="text-[10px] font-black uppercase tracking-widest">Enter destination to see route</p>
-                        </div>
-                    )}
-                    {isCalculating && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-white/40 backdrop-blur-[2px]">
-                            <Loader2 className="animate-spin text-emerald-600" size={24} />
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="date" 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                          value={formData.date}
-                          onChange={(e) => setFormData({...formData, date: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Time</label>
-                      <div className="relative">
-                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="time" 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                          value={formData.time}
-                          onChange={(e) => setFormData({...formData, time: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Flight</label>
-                      <div className="relative">
-                        <PlaneTakeoff className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="text" 
-                          placeholder="Flight No." 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                          value={formData.flight}
-                          onChange={(e) => setFormData({...formData, flight: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pax</label>
-                      <div className="relative">
-                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <select 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all appearance-none text-slate-900 font-medium"
-                          value={formData.passengers}
-                          onChange={(e) => setFormData({...formData, passengers: parseInt(e.target.value)})}
-                        >
-                          {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n} Pax</option>)}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* New: Duration and Nameboard */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Duration (Days)</label>
-                       <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl p-1">
-                          {[1, 2, 3, 4, 5, 7].map(d => (
-                            <button
-                              key={d}
-                              onClick={() => setFormData({...formData, days: d})}
-                              className={`flex-1 py-2 text-xs font-black rounded-lg transition-all ${
-                                formData.days === d ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'
-                              }`}
-                            >
-                              {d} {d === 1 ? 'Day' : 'Days'}
-                            </button>
-                          ))}
-                       </div>
-                       <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-tighter">€40 Flat Rate per day applied for multi-day tours</p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Nameboard Text (Optional)</label>
-                      <div className="relative">
-                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="text" 
-                          placeholder="Name to show on board" 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                          value={formData.nameboard}
-                          onChange={(e) => setFormData({...formData, nameboard: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between pt-6">
-                    <button onClick={handleBack} className="flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-all font-black text-xs uppercase tracking-widest">
-                      <ChevronLeft size={20} /> Back
-                    </button>
-                    <button 
-                      onClick={handleNext}
-                      disabled={!formData.pickup || !formData.destination || !formData.date}
-                      className="btn-premium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Next Step <ChevronRight size={20} />
-                    </button>
-                  </div>
+                  ))}
                 </div>
+                <button onClick={() => setStep(1)} className="mt-8 text-slate-400 text-xs font-black uppercase tracking-widest flex items-center gap-2"><ChevronLeft size={16} /> Back</button>
               </motion.div>
             )}
 
             {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -20, opacity: 0 }}
-              >
-                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter mb-8">Confirm Booking</h3>
-                <div className="space-y-6">
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
-                    <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-                      <div>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Vehicle</p>
-                        <p className="font-black text-lg text-emerald-600">{formData.vehicle?.name}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">Estimated Price</p>
-                        <div className="flex items-center gap-2 justify-end">
-                            {isCalculating && <Loader2 className="animate-spin text-emerald-600" size={16} />}
-                            <p className="font-black text-xl text-emerald-950">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</p>
-                        </div>
-                        {distanceInfo.km > 0 && <p className="text-[10px] text-emerald-600 font-bold tracking-widest uppercase">{distanceInfo.text}</p>}
-                        <p className="text-[10px] text-orange-600 font-black mt-1 uppercase tracking-tighter">* Fuel not included</p>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-slate-400 text-[10px] uppercase font-black">From</p>
-                        <p className="text-slate-900 font-bold">{formData.pickup}</p>
-                      </div>
-                      <div>
-                        <p className="text-slate-400 text-[10px] uppercase font-black">To</p>
-                        <p className="text-slate-900 font-bold">{formData.destination}</p>
-                      </div>
-                      <div>
-                        <p className="text-slate-400 text-[10px] uppercase font-black">Date & Time</p>
-                        <p className="text-slate-900 font-bold">{formData.date} @ {formData.time}</p>
-                      </div>
-                      <div>
-                        <p className="text-slate-400 text-[10px] uppercase font-black">Pax</p>
-                        <p className="text-slate-900 font-bold">{formData.passengers} Persons</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <input 
-                        type="text" 
-                        placeholder="Your Full Name" 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      />
-                      <input 
-                        type="email" 
-                        placeholder="Email Address" 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <input 
-                        type="tel" 
-                        placeholder="WhatsApp Number" 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      />
-                      <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-slate-400 text-xs font-medium">
-                         <Zap size={14} /> Confirmation emails will be sent.
-                      </div>
-                    </div>
-                    <textarea 
-                      placeholder="Special Requirements (Optional)" 
-                      className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all h-24 resize-none text-slate-900 font-medium"
-                      value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                    ></textarea>
-                  </div>
-
-                  <div className="flex justify-between pt-6">
-                    <button onClick={handleBack} className="flex items-center gap-2 text-slate-400 hover:text-emerald-600 transition-all font-black text-xs uppercase tracking-widest">
-                      <ChevronLeft size={20} /> Back
-                    </button>
-                    <button 
-                      onClick={generateWhatsApp}
-                      disabled={!formData.name || !formData.phone || !formData.email || isCalculating}
-                      className="px-10 py-3 bg-[#25D366] text-white font-black rounded-full hover:bg-[#128C7E] transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"
-                    >
-                      <Send size={18} /> Confirm on WhatsApp
-                    </button>
-                  </div>
+              <motion.div key="step3" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-6">
+                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Complete Details</h3>
+                <div className="w-full h-48 rounded-3xl bg-slate-100 overflow-hidden border border-slate-200 relative">
+                   <div ref={mapRef} className="w-full h-full" />
+                   {isCalculating && <div className="absolute inset-0 flex items-center justify-center bg-white/40"><Loader2 className="animate-spin text-emerald-600" size={24} /></div>}
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input type="date" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
+                  <input type="time" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} />
+                  <input type="text" placeholder="Flight No." className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.flight} onChange={(e) => setFormData({...formData, flight: e.target.value})} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input type="text" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                  <input type="email" placeholder="Email" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                  <input type="tel" placeholder="WhatsApp Number" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+                  <input type="text" placeholder="Nameboard Text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.nameboard} onChange={(e) => setFormData({...formData, nameboard: e.target.value})} />
+                </div>
+                <button onClick={generateWhatsApp} disabled={!formData.name || !formData.phone || !formData.email} className="w-full py-4 bg-[#25D366] text-white font-black rounded-full shadow-lg flex items-center justify-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"><Send size={18} /> Confirm on WhatsApp</button>
+                <button onClick={() => setStep(2)} className="text-slate-400 text-xs font-black uppercase tracking-widest flex items-center gap-2"><ChevronLeft size={16} /> Back</button>
               </motion.div>
             )}
 
             {step === 4 && (
-              <motion.div
-                key="step4"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center py-10"
-              >
-                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                   <CheckCircle2 size={40} />
-                </div>
+              <motion.div key="step4" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center py-10">
+                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle2 size={40} /></div>
                 <h3 className="text-3xl font-black text-emerald-950 tracking-tighter mb-4">Booking Confirmed!</h3>
-                <p className="text-slate-500 mb-10 max-w-sm mx-auto font-medium">Your request has been sent to Kapila via WhatsApp. A confirmation email has also been sent to <span className="text-emerald-600 font-bold">{formData.email}</span>.</p>
-                
-                {/* Digital Receipt */}
-                <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 max-w-md mx-auto text-left shadow-xl relative overflow-hidden">
+                <p className="text-slate-500 mb-10 font-medium">Your request has been sent. A confirmation email has also been sent to {formData.email}.</p>
+                <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 max-w-md mx-auto text-left relative overflow-hidden">
                    <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-600" />
-                   <div className="flex justify-between items-start mb-8">
-                      <div>
-                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Receipt No.</p>
-                         <p className="font-black text-emerald-950">KT-{Math.floor(Math.random() * 10000)}</p>
-                      </div>
-                      <div className="text-right">
-                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</p>
-                         <p className="font-black text-emerald-950">{new Date().toLocaleDateString()}</p>
-                      </div>
-                   </div>
-
-                   <div className="space-y-4 mb-8">
-                      <div className="flex justify-between">
-                         <span className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Vehicle</span>
-                         <span className="text-emerald-950 font-black text-xs">{formData.vehicle?.name}</span>
-                      </div>
-                      <div className="flex justify-between">
-                         <span className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Duration</span>
-                         <span className="text-emerald-950 font-black text-xs">{formData.days} Day(s)</span>
-                      </div>
-                      {formData.nameboard && (
-                        <div className="flex justify-between">
-                           <span className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Nameboard</span>
-                           <span className="text-emerald-600 font-black text-xs">{formData.nameboard}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between border-t border-slate-100 pt-4">
-                         <span className="text-slate-950 font-black text-sm uppercase">Total Price</span>
-                         <span className="text-emerald-600 font-black text-lg">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</span>
-                      </div>
-                   </div>
-
-                   <div className="p-4 bg-orange-50 border border-orange-100 rounded-xl">
-                      <p className="text-[9px] font-black text-orange-900 uppercase tracking-widest mb-1">Important Note</p>
-                      <p className="text-[10px] text-orange-800 font-medium">Customer must pay for fuel separately. Unlimited kilometers included for the duration.</p>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Receipt No. KT-{Math.floor(Math.random() * 10000)}</p>
+                   <div className="space-y-3">
+                      <div className="flex justify-between"><span className="text-slate-400 text-xs font-bold uppercase">Vehicle</span><span className="text-emerald-950 font-black text-xs">{formData.vehicle?.name}</span></div>
+                      <div className="flex justify-between border-t pt-3"><span className="text-slate-950 font-black text-sm">Total</span><span className="text-emerald-600 font-black text-lg">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</span></div>
                    </div>
                 </div>
-
-                <button 
-                  onClick={() => setIsOpen(false)}
-                  className="mt-10 text-emerald-600 font-black text-xs uppercase tracking-widest hover:tracking-widest transition-all"
-                >
-                  Close Receipt
-                </button>
+                <button onClick={() => setIsOpen(false)} className="mt-10 text-emerald-600 font-black text-xs uppercase tracking-widest">Close</button>
               </motion.div>
             )}
           </AnimatePresence>
