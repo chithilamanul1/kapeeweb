@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap, Map as MapIcon } from 'lucide-react';
 
 const vehicles = [
   { 
@@ -60,6 +60,138 @@ const BookingModal = () => {
   const exchangeRates = { LKR: 320, USD: 1.08, EUR: 1 };
   const currencySymbols = { LKR: 'Rs.', USD: '$', EUR: '€' };
 
+  // Google Maps Refs & State
+  const pickupRef = useRef(null);
+  const destRef = useRef(null);
+  const mapRef = useRef(null);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+  const [map, setMap] = useState(null);
+  const [directionsRenderer, setDirectionsRenderer] = useState(null);
+
+  // Load Google Maps Script
+  useEffect(() => {
+    if (window.google) {
+      setGoogleLoaded(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
+  }, []);
+
+  // Initialize Autocomplete
+  useEffect(() => {
+    if (!googleLoaded) return;
+
+    const options = {
+      componentRestrictions: { country: "lk" },
+      fields: ["address_components", "geometry", "icon", "name", "formatted_address"],
+      strictBounds: false,
+    };
+
+    const pickupAutocomplete = new window.google.maps.places.Autocomplete(pickupRef.current, options);
+    const destAutocomplete = new window.google.maps.places.Autocomplete(destRef.current, options);
+
+    pickupAutocomplete.addListener("place_changed", () => {
+      const place = pickupAutocomplete.getPlace();
+      if (place.formatted_address) {
+        setFormData(prev => ({ ...prev, pickup: place.formatted_address }));
+      }
+    });
+
+    destAutocomplete.addListener("place_changed", () => {
+      const place = destAutocomplete.getPlace();
+      if (place.formatted_address) {
+        setFormData(prev => ({ ...prev, destination: place.formatted_address }));
+      }
+    });
+  }, [googleLoaded]);
+
+  // Initialize Map when step 2 or 3 is active
+  useEffect(() => {
+    if (googleLoaded && mapRef.current && !map && (step === 2 || step === 3)) {
+      const newMap = new window.google.maps.Map(mapRef.current, {
+        center: { lat: 7.8731, lng: 80.7718 }, // Sri Lanka center
+        zoom: 7,
+        disableDefaultUI: true,
+        styles: [
+            {
+              "featureType": "all",
+              "elementType": "geometry.fill",
+              "stylers": [{ "weight": "2.00" }]
+            },
+            {
+              "featureType": "all",
+              "elementType": "geometry.stroke",
+              "stylers": [{ "color": "#9c9c9c" }]
+            },
+            {
+              "featureType": "all",
+              "elementType": "labels.text",
+              "stylers": [{ "visibility": "on" }]
+            },
+            {
+              "featureType": "landscape",
+              "elementType": "all",
+              "stylers": [{ "color": "#f2f2f2" }]
+            },
+            {
+              "featureType": "poi",
+              "elementType": "all",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "road",
+              "elementType": "all",
+              "stylers": [{ "saturation": -100 }, { "lightness": 45 }]
+            },
+            {
+              "featureType": "road.highway",
+              "elementType": "all",
+              "stylers": [{ "visibility": "simplified" }]
+            },
+            {
+              "featureType": "road.arterial",
+              "elementType": "labels.icon",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "transit",
+              "elementType": "all",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "water",
+              "elementType": "all",
+              "stylers": [{ "color": "#46bcec" }, { "visibility": "on" }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry.fill",
+                "stylers": [{ "color": "#c8d7d4" }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.fill",
+                "stylers": [{ "color": "#ebebeb" }]
+            }
+          ]
+      });
+      const renderer = new window.google.maps.DirectionsRenderer({
+        map: newMap,
+        polylineOptions: {
+          strokeColor: "#10b981",
+          strokeWeight: 5,
+          strokeOpacity: 0.8
+        }
+      });
+      setMap(newMap);
+      setDirectionsRenderer(renderer);
+    }
+  }, [googleLoaded, mapRef, map, step]);
+
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
     window.addEventListener('openBooking', handleOpen);
@@ -69,49 +201,44 @@ const BookingModal = () => {
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
 
-  const getCoordinates = async (address) => {
-    try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address + ', Sri Lanka')}&limit=1`);
-      const data = await response.json();
-      if (data && data.length > 0) {
-        return { lat: data[0].lat, lon: data[0].lon };
-      }
-      return null;
-    } catch (error) {
-      console.error("Geocoding error:", error);
-      return null;
-    }
-  };
-
   const calculateDistance = useCallback(async () => {
-    if (!formData.pickup || !formData.destination) return;
+    if (!formData.pickup || !formData.destination || !googleLoaded) return;
     
     setIsCalculating(true);
     try {
-      const start = await getCoordinates(formData.pickup);
-      const end = await getCoordinates(formData.destination);
-
-      if (start && end) {
-        const routeResponse = await fetch(`https://router.project-osrm.org/route/v1/driving/${start.lon},${start.lat};${end.lon},${end.lat}?overview=false`);
-        const routeData = await routeResponse.json();
-
-        if (routeData.routes && routeData.routes.length > 0) {
-          const km = routeData.routes[0].distance / 1000;
-          setDistanceInfo({ 
-            km: Math.ceil(km), 
-            text: `${Math.ceil(km)} KM trip` 
-          });
+      const directionsService = new window.google.maps.DirectionsService();
+      
+      directionsService.route(
+        {
+          origin: formData.pickup,
+          destination: formData.destination,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            if (directionsRenderer) {
+                directionsRenderer.setDirections(result);
+            }
+            
+            const distance = result.routes[0].legs[0].distance.value / 1000;
+            setDistanceInfo({ 
+              km: Math.ceil(distance), 
+              text: `${Math.ceil(distance)} KM trip` 
+            });
+          } else {
+            console.error("Directions request failed due to " + status);
+          }
+          setIsCalculating(false);
         }
-      }
+      );
     } catch (error) {
-      console.error("OSRM error:", error);
-    } finally {
+      console.error("Google Maps Directions error:", error);
       setIsCalculating(false);
     }
-  }, [formData.pickup, formData.destination]);
+  }, [formData.pickup, formData.destination, googleLoaded, directionsRenderer]);
 
   useEffect(() => {
-    if (step === 3) {
+    if (step === 2 || step === 3) {
       calculateDistance();
     }
   }, [step, calculateDistance]);
@@ -322,6 +449,7 @@ const BookingModal = () => {
                       <div className="relative">
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} />
                         <input 
+                          ref={pickupRef}
                           type="text" 
                           placeholder="Airport, Hotel, etc." 
                           className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
@@ -335,6 +463,7 @@ const BookingModal = () => {
                       <div className="relative">
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input 
+                          ref={destRef}
                           type="text" 
                           placeholder="e.g. Galle, Kandy, Colombo" 
                           className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
@@ -343,6 +472,22 @@ const BookingModal = () => {
                         />
                       </div>
                     </div>
+                  </div>
+
+                  {/* Visual Map Preview */}
+                  <div className="w-full h-48 md:h-64 rounded-3xl bg-slate-100 overflow-hidden relative border border-slate-200">
+                    <div ref={mapRef} className="w-full h-full" />
+                    {!formData.destination && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-50/50 backdrop-blur-sm">
+                            <MapIcon size={32} className="mb-2 opacity-20" />
+                            <p className="text-[10px] font-black uppercase tracking-widest">Enter destination to see route</p>
+                        </div>
+                    )}
+                    {isCalculating && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white/40 backdrop-blur-[2px]">
+                            <Loader2 className="animate-spin text-emerald-600" size={24} />
+                        </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
