@@ -14,7 +14,7 @@ const destinations = [
     name: 'Ella',
     tagline: 'Mountain Paradise',
     description: 'Breathtaking views, tea plantations, and the famous Nine Arch Bridge in the heart of the hill country.',
-    image: '/tours/maduriver.jpg'
+    image: '/ella.jpg'
   },
   {
     name: 'Galle',
