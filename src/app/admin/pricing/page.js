@@ -72,7 +72,7 @@ export default function AdminPricing() {
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-emerald-500 transition-all font-black"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-emerald-500 transition-all font-black text-slate-900"
                     placeholder="••••••••"
                    />
                 </div>
@@ -91,7 +91,7 @@ export default function AdminPricing() {
   if (!pricing) return <div className="h-screen flex items-center justify-center">Loading...</div>;
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
       <div className="container mx-auto px-4 md:px-6 py-24 md:py-32">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12 gap-6">
@@ -147,14 +147,14 @@ export default function AdminPricing() {
                             type="number" 
                             value={range.min} 
                             onChange={(e) => updateRate(idx, 'min', e.target.value)}
-                            className="w-16 md:w-20 bg-slate-50 border border-slate-100 rounded-lg px-2 md:px-3 py-2 text-xs font-bold outline-none"
+                            className="w-16 md:w-20 bg-slate-50 border border-slate-100 rounded-lg px-2 md:px-3 py-2 text-xs font-bold outline-none text-slate-900"
                           />
                           <span className="text-slate-300">-</span>
                           <input 
                             type="number" 
                             value={range.max} 
                             onChange={(e) => updateRate(idx, 'max', e.target.value)}
-                            className="w-16 md:w-20 bg-slate-50 border border-slate-100 rounded-lg px-2 md:px-3 py-2 text-xs font-bold outline-none"
+                            className="w-16 md:w-20 bg-slate-50 border border-slate-100 rounded-lg px-2 md:px-3 py-2 text-xs font-bold outline-none text-slate-900"
                           />
                         </div>
                       </td>
@@ -175,7 +175,7 @@ export default function AdminPricing() {
                               type="number" 
                               value={range.rate} 
                               onChange={(e) => updateRate(idx, 'rate', e.target.value)}
-                              className="w-20 md:w-24 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-black outline-none"
+                              className="w-20 md:w-24 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-black outline-none text-slate-900"
                             />
                             <span className="text-[10px] font-bold text-slate-400">{range.type === 'perKm' ? '/KM' : ''}</span>
                          </div>
@@ -200,7 +200,7 @@ export default function AdminPricing() {
                         step="0.01"
                         value={rate} 
                         onChange={(e) => setPricing({...pricing, exchangeRates: {...pricing.exchangeRates, [curr]: parseFloat(e.target.value)}})}
-                        className="w-20 md:w-24 bg-white border border-slate-200 rounded-xl px-3 md:px-4 py-2 text-sm font-black outline-none text-right"
+                        className="w-20 md:w-24 bg-white border border-slate-200 rounded-xl px-3 md:px-4 py-2 text-sm font-black outline-none text-right text-slate-900"
                       />
                    </div>
                  ))}
@@ -220,7 +220,7 @@ export default function AdminPricing() {
                       type="number" 
                       value={pricing.tourDailyRate} 
                       onChange={(e) => setPricing({...pricing, tourDailyRate: parseFloat(e.target.value)})}
-                      className="w-24 bg-white border border-emerald-200 rounded-xl px-4 py-3 text-lg font-black outline-none text-right"
+                      className="w-24 bg-white border border-emerald-200 rounded-xl px-4 py-3 text-lg font-black outline-none text-right text-slate-900"
                     />
                  </div>
               </div>
