@@ -10,7 +10,7 @@ const services = [
     icon: <Map size={32} strokeWidth={3} className="text-emerald-600" />,
     color: 'bg-emerald-50 text-emerald-600',
     iconBg: 'bg-emerald-100',
-    highlight: '40Km Campaign Available'
+    highlight: '€40 One Day Deal'
   },
   {
     title: 'Airport Transfers',

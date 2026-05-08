@@ -22,16 +22,16 @@ const CampaignBanner = () => {
             <div className="max-w-xl text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/20 border border-emerald-500/30 rounded-full mb-6">
                 <Zap size={14} className="text-emerald-400 animate-pulse" />
-                <span className="text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">Limited Time Campaign</span>
+                <span className="text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">€40 One Day Deal</span>
               </div>
               
               <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-[1.1] tracking-tighter uppercase">
                 One Day Trip <br />
-                <span className="text-emerald-500">Only 40Km Charge</span>
+                <span className="text-emerald-500">Only €40 Charge</span>
               </h2>
               
               <p className="text-emerald-100/70 text-base md:text-lg mb-8 font-medium leading-relaxed">
-                Enjoy <span className="text-white font-bold italic underline decoration-emerald-500">Unlimited Kilometers</span> on your day trip. We only charge for a base of 40Km. Perfect for exploring the island without worrying about distance costs!
+                Enjoy <span className="text-white font-bold italic underline decoration-emerald-500">Unlimited Kilometers</span> on your day trip. We only charge a flat rate of €40. Perfect for exploring the island without worrying about distance costs!
               </p>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10">
@@ -50,7 +50,7 @@ const CampaignBanner = () => {
                     </div>
                     <div>
                        <p className="text-white font-black text-xs uppercase tracking-tighter">Flat Rate</p>
-                       <p className="text-emerald-100/40 text-[10px] font-bold">40Km Base charge</p>
+                       <p className="text-emerald-100/40 text-[10px] font-bold">€40 Flat charge</p>
                     </div>
                  </div>
                  <div className="flex items-center gap-3 lg:col-span-1 col-span-2">

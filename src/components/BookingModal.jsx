@@ -54,7 +54,8 @@ const BookingModal = () => {
     passengers: 1,
     name: '',
     phone: '',
-    notes: ''
+    notes: '',
+    highlight: '€40 One Day Deal'
   });
 
   const exchangeRates = { LKR: 320, USD: 1.08, EUR: 1 };
@@ -227,6 +228,7 @@ const BookingModal = () => {
             });
           } else {
             console.error("Directions request failed due to " + status);
+            setDistanceInfo({ km: 0, text: 'Route not found' });
           }
           setIsCalculating(false);
         }
@@ -437,7 +439,7 @@ const BookingModal = () => {
                   <div>
                     <p className="text-[10px] font-black text-emerald-950 uppercase tracking-widest">Special Campaign Active</p>
                     <p className="text-[11px] text-emerald-700 font-medium leading-tight mt-1">
-                      One-day trip? We only charge for <span className="font-bold">40Km base rate</span> with <span className="font-bold underline">Unlimited Kilometers</span>. Customer pays for fuel separately.
+                      One-day trip? We only charge a <span className="font-bold">€40 Flat Charge</span> with <span className="font-bold underline">Unlimited Kilometers</span>. Customer pays for fuel separately.
                     </p>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Playfair_Display, Caveat } from 'next/font/google';
 import './globals.css';
 
 const inter = Inter({ 
@@ -11,6 +11,12 @@ const inter = Inter({
 const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
+  display: 'swap',
+});
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
   display: 'swap',
 });
 
@@ -88,7 +94,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${caveat.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased text-white selection:bg-gold/30" suppressHydrationWarning>
         <Suspense fallback={<div className="h-screen bg-primary flex items-center justify-center text-gold font-serif text-2xl">Loading...</div>}>
           {children}
