@@ -7,42 +7,32 @@ import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock
 const vehicles = [
   { 
     id: 'sedan', 
-    name: 'Luxury Sedan', 
+    name: 'Sedan', 
     passengers: 3, 
     luggage: 3, 
-    ratePerKm: 0.8, // EUR per KM
-    minRate: 25,
+    ratePerKm: 0, // Not used with flat daily rate
+    minRate: 40,
     multiplier: 1,
     image: '/vehicles/sedancar.png',
     description: 'Perfect for couples or small families.'
-  },
-  { 
-    id: 'van', 
-    name: 'Spacious Van', 
-    passengers: 8, 
-    luggage: 8, 
-    ratePerKm: 1.1, // EUR per KM
-    minRate: 35,
-    multiplier: 1.4,
-    image: '/vehicles/toyota-highroof.png',
-    description: 'Comfortable group travel with ample luggage space.'
   }
 ];
 
-const FIXED_RATES = [
-  { keywords: ['galle', 'unawatuna', 'bossa', 'ahangama', 'kogala'], rate: 68 },
-  { keywords: ['bentota', 'beruwala', 'iduruwa'], rate: 38 },
-  { keywords: ['colombo'], rate: 25 },
-  { keywords: ['kandy'], rate: 63 },
-  { keywords: ['sigiriya', 'habarana'], rate: 63 }
-];
+const FIXED_RATES = [];
 
 const BookingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [currency, setCurrency] = useState('EUR');
+  const [pricing, setPricing] = useState(null);
+  const [currency, setCurrency] = useState('LKR');
   const [isCalculating, setIsCalculating] = useState(false);
   const [distanceInfo, setDistanceInfo] = useState({ km: 0, text: '' });
+
+  useEffect(() => {
+    fetch('/api/pricing')
+      .then(res => res.json())
+      .then(data => setPricing(data));
+  }, []);
   
   const [formData, setFormData] = useState({
     vehicle: null,
@@ -193,26 +183,50 @@ const BookingModal = () => {
   }, [step, calculateDistance]);
 
   const calculatePrice = (vehicle) => {
-    if (!vehicle) return 0;
-    let rateEUR = vehicle.minRate;
-    const isAirportPickup = formData.pickup.toLowerCase().includes('airport') || formData.pickup.toLowerCase().includes('bia');
+    if (!vehicle || !pricing) return { lkr: 0, usd: 0, eur: 0 };
     
-    let fixedMatch = isAirportPickup ? FIXED_RATES.find(zone => zone.keywords.some(kw => formData.destination.toLowerCase().includes(kw))) : null;
+    let totalLKR = 0;
+    
+    if (formData.days > 1) {
+      // Tour logic: €40 * days converted to LKR
+      const totalEUR = pricing.tourDailyRate * formData.days;
+      totalLKR = totalEUR * pricing.exchangeRates.LKR;
+    } else {
+      // Airport Transfer logic: Use distance-based rate sheet
+      const km = distanceInfo.km || 0;
+      const rateConfig = pricing.rateSheet.find(r => km >= r.min && km < r.max) || pricing.rateSheet[pricing.rateSheet.length - 1];
+      
+      if (rateConfig.type === 'flat') {
+        totalLKR = rateConfig.rate;
+      } else {
+        totalLKR = km * rateConfig.rate;
+      }
 
-    if (fixedMatch) {
-      rateEUR = fixedMatch.rate * vehicle.multiplier;
-    } else if (distanceInfo.km > 0) {
-      rateEUR = Math.max(vehicle.minRate, distanceInfo.km * vehicle.ratePerKm);
+      // Airport city overrides (Optional, if user wants to keep specific flat rates for these cities)
+      const destLower = formData.destination.toLowerCase();
+      const fixedMatch = pricing.airportFlatRates.find(zone => zone.keywords.some(kw => destLower.includes(kw)));
+      if (fixedMatch) {
+         // Use the lower of the two or the fixed match? 
+         // User said 68 for Galle is wrong, should be 40. 40 EUR = 12,800 LKR.
+         // Let's use the fixed rate if found.
+         totalLKR = fixedMatch.rate * pricing.exchangeRates.LKR;
+      }
     }
 
-    if (formData.days > 1) rateEUR = 40 * formData.days;
+    const eur = totalLKR / pricing.exchangeRates.LKR;
+    const usd = eur * pricing.exchangeRates.USD;
 
-    const priceTarget = rateEUR * (currency === 'EUR' ? 1 : (currency === 'LKR' ? exchangeRates.LKR : exchangeRates.USD));
-    return priceTarget.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return { 
+      lkr: Math.round(totalLKR), 
+      usd: usd.toFixed(2), 
+      eur: eur.toFixed(2) 
+    };
   };
 
+  const prices = calculatePrice(formData.vehicle);
+
   const generateWhatsApp = () => {
-    const fuelNote = formData.days > 1 ? `%0A%0ANote: Customers must pay for fuel separately.` : '';
+    const fuelNote = `%0A%0ANote: Customers must pay for fuel separately.`;
     
     const text = `Att : Kapila ( Amendment)%0A` +
       `Arrival Transfer%0A` +
@@ -224,7 +238,7 @@ const BookingModal = () => {
       `Nameboard.   : ${formData.nameboard || 'None'}%0A` +
       `Flight.       : ${formData.flight || 'N/A'}%0A` +
       `Vehicle.    : ${formData.vehicle?.name || 'Any'}%0A` +
-      `Price.       : ${currencySymbols[currency]} ${calculatePrice(formData.vehicle)}%0A` +
+      `Price.       : Rs. ${prices.lkr} (approx. €${prices.eur})%0A` +
       `Drop off    : ${formData.destination}%0A` +
       `Contact No : ${formData.phone}${fuelNote}%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
@@ -350,9 +364,20 @@ const BookingModal = () => {
                       <p className="font-black text-emerald-950">{formData.vehicle?.name}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest">Estimated Price</p>
-                      <p className="text-2xl font-black text-emerald-950 leading-none">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</p>
-                      {distanceInfo.km > 0 && <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-widest mt-1">{distanceInfo.text}</p>}
+                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em] mb-2">Total Payable</p>
+                      <div className="flex flex-col items-end gap-1">
+                        <p className="text-3xl font-black text-emerald-950 leading-none mb-4">Rs {prices.lkr.toLocaleString()}</p>
+                        <div className="flex gap-2">
+                           <div className="bg-white border border-slate-100 rounded-xl px-4 py-2 text-center shadow-sm">
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">USD Estimate</p>
+                              <p className="text-sm font-black text-emerald-950">$ {prices.usd}</p>
+                           </div>
+                           <div className="bg-white border border-slate-100 rounded-xl px-4 py-2 text-center shadow-sm">
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">EUR Estimate</p>
+                              <p className="text-sm font-black text-emerald-950">€ {prices.eur}</p>
+                           </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-6 text-xs">
@@ -392,13 +417,11 @@ const BookingModal = () => {
                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Receipt No. KT-{Math.floor(Math.random() * 10000)}</p>
                    <div className="space-y-3">
                       <div className="flex justify-between"><span className="text-slate-400 text-xs font-bold uppercase">Vehicle</span><span className="text-emerald-950 font-black text-xs">{formData.vehicle?.name}</span></div>
-                      <div className="flex justify-between border-t pt-3"><span className="text-slate-950 font-black text-sm">Total</span><span className="text-emerald-600 font-black text-lg">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</span></div>
+                      <div className="flex justify-between border-t pt-3"><span className="text-slate-950 font-black text-sm">Total</span><span className="text-emerald-600 font-black text-lg">Rs. {prices.lkr.toLocaleString()} (USD: ${prices.usd} / EUR: €{prices.eur})</span></div>
                    </div>
-                   {formData.days > 1 && (
-                     <div className="mt-4 p-3 bg-orange-50 border border-orange-100 rounded-xl">
-                        <p className="text-[10px] text-orange-800 font-bold uppercase tracking-tighter">Note: Fuel not included in this price.</p>
-                     </div>
-                   )}
+                   <div className="mt-4 p-3 bg-orange-50 border border-orange-100 rounded-xl">
+                      <p className="text-[10px] text-orange-800 font-bold uppercase tracking-tighter">Note: Fuel must be paid by the customer.</p>
+                   </div>
                 </div>
                 <button onClick={() => setIsOpen(false)} className="mt-10 text-emerald-600 font-black text-xs uppercase tracking-widest">Close</button>
               </motion.div>

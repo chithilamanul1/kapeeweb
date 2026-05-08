@@ -20,13 +20,13 @@ const AboutSection = () => {
             </h2>
             <div className="space-y-6 text-slate-500 leading-relaxed font-medium">
               <p>
-                Founded by <span className="font-black text-emerald-950">N Kapila Silva</span>, <span className="font-black text-emerald-600">Kapee Tours</span> has become synonymous with trust and luxury in the Seeduwa region. With over 15 years of experience in the Sri Lankan travel industry, we specialize in seamless transportation for international travelers.
+                Founded by <span className="font-black text-emerald-950">N Kapila Silva</span>, <span className="font-black text-emerald-600">Kapee Tours</span> has become synonymous with trust and comfort in the Seeduwa region. With over 15 years of experience in the Sri Lankan travel industry, we specialize in seamless transportation for international travelers.
               </p>
               <p>
                 Our deep roots in <span className="text-emerald-600 font-black">Seeduwa</span> allow us to offer unparalleled local knowledge, ensuring our guests discover hidden gems that ordinary tours miss. Whether you search for &ldquo;Seeduwa tours&rdquo; or &ldquo;Kapila tours&rdquo;, you will find a team dedicated to your comfort.
               </p>
               <p>
-                We take pride in our diverse fleet of luxury vehicles and our commitment to safety, making <span className="text-emerald-600 font-black">Kapi Travels</span> the preferred choice for airport transfers and multi-day island excursions.
+                We take pride in our diverse fleet of premium vehicles and our commitment to safety, making <span className="text-emerald-600 font-black">Kapi Travels</span> the preferred choice for airport transfers and multi-day island excursions.
               </p>
             </div>
           </motion.div>

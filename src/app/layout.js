@@ -43,7 +43,7 @@ export const metadata = {
     'airport taxi sri lanka', 
     'travel agency seeduwa', 
     'custom tours sri lanka', 
-    'luxury travel sri lanka', 
+    'premium travel sri lanka', 
     'Kapee travels', 
     'N Kapila Silva tours'
   ],

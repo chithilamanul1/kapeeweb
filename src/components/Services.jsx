@@ -17,7 +17,8 @@ const services = [
     description: 'Punctual and comfortable pickups and drops from Colombo International Airport to any destination in Sri Lanka.',
     icon: <PlaneTakeoff size={32} strokeWidth={3} className="text-emerald-600" />,
     color: 'bg-blue-50 text-blue-600',
-    iconBg: 'bg-blue-100'
+    iconBg: 'bg-blue-100',
+    highlight: '€40 Flat Rate'
   },
   {
     title: 'Corporate Travel',
