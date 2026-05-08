@@ -359,27 +359,32 @@ const BookingModal = () => {
                 </div>
 
                 {/* Trip Summary Preview */}
-                <div className="bg-emerald-50/50 border border-emerald-100 p-6 rounded-3xl space-y-4">
-                  <div className="flex justify-between items-start border-b border-emerald-100 pb-4">
-                    <div>
-                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest">Selected Vehicle</p>
-                      <p className="font-black text-emerald-950">{formData.vehicle?.name}</p>
+                <div className="bg-emerald-50/50 border border-emerald-100 p-6 md:p-8 rounded-[2rem] space-y-8">
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-emerald-100 pb-8">
+                    <div className="flex items-center gap-6 w-full md:w-auto">
+                       <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center p-3 shadow-sm border border-emerald-100/50">
+                          <img src={formData.vehicle?.image} alt={formData.vehicle?.name} className="max-h-full max-w-full object-contain" />
+                       </div>
+                       <div>
+                          <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em] mb-1">Selected Vehicle</p>
+                          <p className="text-xl font-black text-emerald-950 uppercase tracking-tight">{formData.vehicle?.name}</p>
+                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em] mb-2">Total Payable</p>
-                      <div className="flex flex-col items-end gap-1">
-                        <p className="text-3xl font-black text-emerald-950 leading-none mb-4">Rs {prices.lkr.toLocaleString()}</p>
-                        <div className="flex gap-2">
-                           <div className="bg-white border border-slate-100 rounded-xl px-4 py-2 text-center shadow-sm">
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">USD Estimate</p>
-                              <p className="text-sm font-black text-emerald-950">$ {prices.usd}</p>
-                           </div>
-                           <div className="bg-white border border-slate-100 rounded-xl px-4 py-2 text-center shadow-sm">
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">EUR Estimate</p>
-                              <p className="text-sm font-black text-emerald-950">€ {prices.eur}</p>
-                           </div>
-                        </div>
-                      </div>
+                    
+                    <div className="text-center md:text-right w-full md:w-auto">
+                       <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em] mb-3">Total Payable</p>
+                       <p className="text-4xl md:text-5xl font-black text-emerald-950 tracking-tighter leading-none mb-6">Rs {prices.lkr.toLocaleString()}</p>
+                       
+                       <div className="flex justify-center md:justify-end gap-3">
+                          <div className="bg-white border border-slate-100 rounded-2xl px-5 py-3 text-center shadow-sm min-w-[100px]">
+                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">USD Estimate</p>
+                             <p className="text-sm font-black text-emerald-950">$ {prices.usd}</p>
+                          </div>
+                          <div className="bg-white border border-slate-100 rounded-2xl px-5 py-3 text-center shadow-sm min-w-[100px]">
+                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">EUR Estimate</p>
+                             <p className="text-sm font-black text-emerald-950">€ {prices.eur}</p>
+                          </div>
+                       </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-6 text-xs">
