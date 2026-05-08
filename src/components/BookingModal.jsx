@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap, Map as MapIcon } from 'lucide-react';
+import pricingData from '@/data/pricing.json';
 
 const vehicles = [
   { 
@@ -34,16 +35,10 @@ const FIXED_RATES = [];
 const BookingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [pricing, setPricing] = useState(null);
+  const [pricing] = useState(pricingData);
   const [currency, setCurrency] = useState('LKR');
   const [isCalculating, setIsCalculating] = useState(false);
   const [distanceInfo, setDistanceInfo] = useState({ km: 0, text: '' });
-
-  useEffect(() => {
-    fetch('/api/pricing')
-      .then(res => res.json())
-      .then(data => setPricing(data));
-  }, []);
   
   const [formData, setFormData] = useState({
     vehicle: null,
