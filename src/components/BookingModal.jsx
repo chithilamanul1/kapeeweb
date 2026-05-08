@@ -404,7 +404,6 @@ const BookingModal = () => {
                        </select>
                     </div>
                   </div>
-                </div>
                 <button onClick={() => setStep(2)} disabled={!formData.destination} className="w-full py-4 bg-emerald-950 text-white font-black rounded-full shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest">Choose Vehicle <ChevronRight size={18} /></button>
               </motion.div>
             )}
