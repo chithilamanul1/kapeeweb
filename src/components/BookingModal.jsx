@@ -200,9 +200,10 @@ const BookingModal = () => {
       const totalEUR = pricing.tourDailyRate * formData.days * (vehicle.multiplier || 1);
       totalLKR = totalEUR * pricing.exchangeRates.LKR;
     } else {
-      // Airport Transfer logic: Use distance-based rate sheet
+      // Airport Transfer logic: Use vehicle-specific distance-based rate sheet
       const km = distanceInfo.km || 0;
-      const rateConfig = pricing.rateSheet.find(r => km >= r.min && km < r.max) || pricing.rateSheet[pricing.rateSheet.length - 1];
+      const rateSheet = vehicle.id === 'van' ? pricing.vanRateSheet : pricing.sedanRateSheet;
+      const rateConfig = rateSheet.find(r => km >= r.min && km < r.max) || rateSheet[rateSheet.length - 1];
       
       if (rateConfig.type === 'flat') {
         totalLKR = rateConfig.rate;
@@ -214,11 +215,9 @@ const BookingModal = () => {
       const destLower = formData.destination.toLowerCase();
       const fixedMatch = pricing.airportFlatRates.find(zone => zone.keywords.some(kw => destLower.includes(kw)));
       if (fixedMatch) {
-          totalLKR = fixedMatch.rate * pricing.exchangeRates.LKR;
+          // Fixed rates are per Sedan; apply multiplier for other vehicles
+          totalLKR = fixedMatch.rate * pricing.exchangeRates.LKR * (vehicle.multiplier || 1);
       }
-
-      // Apply vehicle multiplier
-      totalLKR = totalLKR * (vehicle.multiplier || 1);
     }
 
     const eur = totalLKR / pricing.exchangeRates.LKR;

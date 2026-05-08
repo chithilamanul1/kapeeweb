@@ -1,5 +1,5 @@
 {
-  "rateSheet": [
+  "sedanRateSheet": [
     { "min": 0, "max": 20, "type": "flat", "rate": 5000 },
     { "min": 20, "max": 35, "type": "flat", "rate": 6500 },
     { "min": 35, "max": 40, "type": "flat", "rate": 7000 },
@@ -8,6 +8,15 @@
     { "min": 70, "max": 140, "type": "perKm", "rate": 140 },
     { "min": 140, "max": 200, "type": "perKm", "rate": 120 },
     { "min": 200, "max": 9999, "type": "perKm", "rate": 115 }
+  ],
+  "vanRateSheet": [
+    { "min": 0, "max": 20, "type": "flat", "rate": 7000 },
+    { "min": 20, "max": 40, "type": "flat", "rate": 10000 },
+    { "min": 40, "max": 50, "type": "flat", "rate": 11000 },
+    { "min": 50, "max": 100, "type": "perKm", "rate": 210 },
+    { "min": 100, "max": 140, "type": "perKm", "rate": 180 },
+    { "min": 140, "max": 200, "type": "perKm", "rate": 160 },
+    { "min": 200, "max": 9999, "type": "perKm", "rate": 150 }
   ],
   "airportFlatRates": [
     { "keywords": ["galle", "unawatuna", "bossa", "ahangama", "kogala"], "rate": 40 },
