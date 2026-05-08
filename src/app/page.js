@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import CampaignBanner from '@/components/CampaignBanner';
 import Services from '@/components/Services';
 import Destinations from '@/components/Destinations';
 import WhyChooseUs from '@/components/WhyChooseUs';
@@ -14,6 +15,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       <Hero />
+      <CampaignBanner />
       <Services />
       <AboutSection />
       <Destinations />

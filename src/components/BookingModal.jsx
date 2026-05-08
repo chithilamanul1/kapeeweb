@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap } from 'lucide-react';
 
 const vehicles = [
   { 
@@ -302,7 +302,19 @@ const BookingModal = () => {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -20, opacity: 0 }}
               >
-                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter mb-8">Trip Details</h3>
+                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter mb-4">Trip Details</h3>
+                
+                {/* Campaign Info Box */}
+                <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl mb-6 flex items-start gap-3">
+                  <Zap size={18} className="text-emerald-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-950 uppercase tracking-widest">Special Campaign Active</p>
+                    <p className="text-[11px] text-emerald-700 font-medium leading-tight mt-1">
+                      One-day trip? We only charge for <span className="font-bold">40Km base rate</span> with <span className="font-bold underline">Unlimited Kilometers</span>. Customer pays for fuel separately.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
