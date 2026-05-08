@@ -211,13 +211,6 @@ const BookingModal = () => {
         totalLKR = km * rateConfig.rate;
       }
 
-      // Airport city overrides
-      const destLower = formData.destination.toLowerCase();
-      const fixedMatch = pricing.airportFlatRates.find(zone => zone.keywords.some(kw => destLower.includes(kw)));
-      if (fixedMatch) {
-          // Fixed rates are per Sedan; apply multiplier for other vehicles
-          totalLKR = fixedMatch.rate * pricing.exchangeRates.LKR * (vehicle.multiplier || 1);
-      }
     }
 
     const eur = totalLKR / pricing.exchangeRates.LKR;

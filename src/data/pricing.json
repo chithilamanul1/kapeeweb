@@ -15,15 +15,8 @@
     { "min": 40, "max": 50, "type": "flat", "rate": 11000 },
     { "min": 50, "max": 100, "type": "perKm", "rate": 210 },
     { "min": 100, "max": 140, "type": "perKm", "rate": 180 },
-    { "min": 140, "max": 200, "type": "perKm", "rate": 160 },
+    { "min": 141, "max": 200, "type": "perKm", "rate": 160 },
     { "min": 200, "max": 9999, "type": "perKm", "rate": 150 }
-  ],
-  "airportFlatRates": [
-    { "keywords": ["galle", "unawatuna", "bossa", "ahangama", "kogala"], "rate": 40 },
-    { "keywords": ["bentota", "beruwala", "iduruwa"], "rate": 38 },
-    { "keywords": ["colombo"], "rate": 25 },
-    { "keywords": ["kandy"], "rate": 63 },
-    { "keywords": ["sigiriya", "habarana"], "rate": 63 }
   ],
   "tourDailyRate": 40,
   "exchangeRates": {
