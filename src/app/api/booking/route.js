@@ -8,8 +8,8 @@ export async function POST(req) {
     const apiKey = process.env.RESEND_API_KEY;
     
     if (!apiKey) {
-      console.warn("RESEND_API_KEY not found in environment variables. Email not sent.");
-      return NextResponse.json({ success: false, message: "API Key missing" }, { status: 500 });
+      console.warn("RESEND_API_KEY not found in environment variables. Email notification skipped.");
+      return NextResponse.json({ success: true, warning: "Email not sent (API key missing)" });
     }
 
     // Prepare Email Content
