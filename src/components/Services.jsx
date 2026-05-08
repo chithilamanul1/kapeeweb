@@ -78,7 +78,9 @@ const Services = () => {
                   {service.description}
                 </p>
                 <button 
-                   onClick={() => window.dispatchEvent(new CustomEvent('openBooking'))}
+                   onClick={() => window.dispatchEvent(new CustomEvent('openBooking', { 
+                     detail: { type: service.title.toLowerCase().includes('airport') ? 'airport' : 'tour' } 
+                   }))}
                    className="flex items-center gap-3 text-emerald-600 font-black text-xs uppercase tracking-widest group-hover:gap-5 transition-all"
                 >
                   Book Service <ChevronRight size={16} strokeWidth={3} />

@@ -76,8 +76,17 @@ const BookingModal = () => {
   useEffect(() => {
     const handleOpen = (e) => {
       setIsOpen(true);
-      if (e.detail && e.detail.destination) {
-        setFormData(prev => ({ ...prev, destination: e.detail.destination }));
+      if (e.detail) {
+        if (e.detail.type) {
+          setFormData(prev => ({ 
+            ...prev, 
+            tripType: e.detail.type,
+            pickup: e.detail.type === 'airport' ? 'Bandaranaike International Airport (BIA)' : '',
+            destination: e.detail.destination || prev.destination
+          }));
+        } else if (e.detail.destination) {
+          setFormData(prev => ({ ...prev, destination: e.detail.destination }));
+        }
       }
     };
     window.addEventListener('openBooking', handleOpen);
