@@ -10,11 +10,22 @@ const vehicles = [
     name: 'Sedan', 
     passengers: 3, 
     luggage: 3, 
-    ratePerKm: 0, // Not used with flat daily rate
+    ratePerKm: 0, 
     minRate: 40,
     multiplier: 1,
     image: '/vehicles/sedancar.png',
     description: 'Perfect for couples or small families.'
+  },
+  { 
+    id: 'van', 
+    name: 'Van', 
+    passengers: 8, 
+    luggage: 8, 
+    ratePerKm: 0, 
+    minRate: 56,
+    multiplier: 1.4,
+    image: '/vehicles/toyota-highroof.png',
+    description: 'Comfortable group travel with ample luggage space.'
   }
 ];
 
@@ -188,8 +199,8 @@ const BookingModal = () => {
     let totalLKR = 0;
     
     if (formData.days > 1) {
-      // Tour logic: €40 * days converted to LKR
-      const totalEUR = pricing.tourDailyRate * formData.days;
+      // Tour logic: Base rate * days * vehicle multiplier
+      const totalEUR = pricing.tourDailyRate * formData.days * (vehicle.multiplier || 1);
       totalLKR = totalEUR * pricing.exchangeRates.LKR;
     } else {
       // Airport Transfer logic: Use distance-based rate sheet
@@ -206,11 +217,11 @@ const BookingModal = () => {
       const destLower = formData.destination.toLowerCase();
       const fixedMatch = pricing.airportFlatRates.find(zone => zone.keywords.some(kw => destLower.includes(kw)));
       if (fixedMatch) {
-         // Use the lower of the two or the fixed match? 
-         // User said 68 for Galle is wrong, should be 40. 40 EUR = 12,800 LKR.
-         // Let's use the fixed rate if found.
-         totalLKR = fixedMatch.rate * pricing.exchangeRates.LKR;
+          totalLKR = fixedMatch.rate * pricing.exchangeRates.LKR;
       }
+
+      // Apply vehicle multiplier
+      totalLKR = totalLKR * (vehicle.multiplier || 1);
     }
 
     const eur = totalLKR / pricing.exchangeRates.LKR;
