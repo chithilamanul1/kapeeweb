@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap, Map as MapIcon } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap, Map as MapIcon, Plus } from 'lucide-react';
 import pricingData from '@/data/pricing.json';
 
 const vehicles = [
@@ -333,7 +333,9 @@ const BookingModal = () => {
                   </button>
                 </div>
 
-                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Trip Essentials</h3>
+                <h3 className="text-2xl font-black text-emerald-950 tracking-tighter uppercase">
+                   {formData.tripType === 'airport' ? 'Airport Transfer' : 'Custom Tour Route'}
+                </h3>
                   <div className="space-y-4">
                     <div className="space-y-2">
                        <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pickup</label>
