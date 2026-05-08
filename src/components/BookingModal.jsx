@@ -212,6 +212,8 @@ const BookingModal = () => {
   };
 
   const generateWhatsApp = () => {
+    const fuelNote = formData.days > 1 ? `%0A%0ANote: Customers must pay for fuel separately.` : '';
+    
     const text = `Att : Kapila ( Amendment)%0A` +
       `Arrival Transfer%0A` +
       `Name.      : ${formData.name}%0A` +
@@ -224,8 +226,7 @@ const BookingModal = () => {
       `Vehicle.    : ${formData.vehicle?.name || 'Any'}%0A` +
       `Price.       : ${currencySymbols[currency]} ${calculatePrice(formData.vehicle)}%0A` +
       `Drop off    : ${formData.destination}%0A` +
-      `Contact No : ${formData.phone}%0A%0A` +
-      `*Note: Customers must pay for fuel separately.*%0A%0A` +
+      `Contact No : ${formData.phone}${fuelNote}%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
     
     fetch('/api/booking', {
@@ -393,6 +394,11 @@ const BookingModal = () => {
                       <div className="flex justify-between"><span className="text-slate-400 text-xs font-bold uppercase">Vehicle</span><span className="text-emerald-950 font-black text-xs">{formData.vehicle?.name}</span></div>
                       <div className="flex justify-between border-t pt-3"><span className="text-slate-950 font-black text-sm">Total</span><span className="text-emerald-600 font-black text-lg">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</span></div>
                    </div>
+                   {formData.days > 1 && (
+                     <div className="mt-4 p-3 bg-orange-50 border border-orange-100 rounded-xl">
+                        <p className="text-[10px] text-orange-800 font-bold uppercase tracking-tighter">Note: Fuel not included in this price.</p>
+                     </div>
+                   )}
                 </div>
                 <button onClick={() => setIsOpen(false)} className="mt-10 text-emerald-600 font-black text-xs uppercase tracking-widest">Close</button>
               </motion.div>
