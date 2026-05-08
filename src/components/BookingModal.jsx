@@ -55,7 +55,10 @@ const BookingModal = () => {
     name: '',
     phone: '',
     notes: '',
-    highlight: '€40 One Day Deal'
+    highlight: '€40 One Day Deal',
+    days: 1,
+    nameboard: '',
+    email: ''
   });
 
   const exchangeRates = { LKR: 320, USD: 1.08, EUR: 1 };
@@ -267,6 +270,12 @@ const BookingModal = () => {
       rateEUR = Math.max(vehicle.minRate, distRate);
     }
 
+    // Apply Multi-Day Deal if days > 1 or specific keywords match
+    const isMultiDay = formData.days > 1;
+    if (isMultiDay) {
+       rateEUR = 40 * formData.days;
+    }
+
     // Currency conversion
     const priceTarget = rateEUR * (currency === 'EUR' ? 1 : (currency === 'LKR' ? exchangeRates.LKR : exchangeRates.USD));
 
@@ -283,6 +292,8 @@ const BookingModal = () => {
       `Pax.          : ${formData.passengers}%0A` +
       `Date.        : ${formData.date}%0A` +
       `Time.        : ${formData.time}%0A` +
+      `Duration.    : ${formData.days} Day(s)%0A` +
+      `Nameboard.   : ${formData.nameboard || 'None'}%0A` +
       `Flight.       : ${formData.flight || 'N/A'}%0A` +
       `Vehicle.    : ${formData.vehicle?.name || 'Any'}%0A` +
       `Distance. : ${distanceInfo.km} KM%0A` +
@@ -292,8 +303,16 @@ const BookingModal = () => {
       `*Note: Customers must pay for fuel separately.*%0A%0A` +
       `*Notes:* ${formData.notes || 'None'}`;
     
+    // Trigger email confirmation
+    fetch('/api/booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, distanceInfo, price: calculatePrice(formData.vehicle), currency })
+    }).catch(err => console.error("Email trigger failed:", err));
+
     if (typeof window !== 'undefined') {
       window.open(`https://wa.me/94768743357?text=${text}`, '_blank');
+      setStep(4); // Move to receipt step
     }
   };
 
@@ -359,7 +378,7 @@ const BookingModal = () => {
 
           {/* Progress bar */}
           <div className="flex gap-2 mb-10">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3, 4].map(i => (
               <div 
                 key={i} 
                 className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
@@ -537,10 +556,44 @@ const BookingModal = () => {
                         <select 
                           className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all appearance-none text-slate-900 font-medium"
                           value={formData.passengers}
-                          onChange={(e) => setFormData({...formData, passengers: e.target.value})}
+                          onChange={(e) => setFormData({...formData, passengers: parseInt(e.target.value)})}
                         >
                           {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n} Pax</option>)}
                         </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* New: Duration and Nameboard */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Duration (Days)</label>
+                       <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl p-1">
+                          {[1, 2, 3, 4, 5, 7].map(d => (
+                            <button
+                              key={d}
+                              onClick={() => setFormData({...formData, days: d})}
+                              className={`flex-1 py-2 text-xs font-black rounded-lg transition-all ${
+                                formData.days === d ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'
+                              }`}
+                            >
+                              {d} {d === 1 ? 'Day' : 'Days'}
+                            </button>
+                          ))}
+                       </div>
+                       <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-tighter">€40 Flat Rate per day applied for multi-day tours</p>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Nameboard Text (Optional)</label>
+                      <div className="relative">
+                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input 
+                          type="text" 
+                          placeholder="Name to show on board" 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
+                          value={formData.nameboard}
+                          onChange={(e) => setFormData({...formData, nameboard: e.target.value})}
+                        />
                       </div>
                     </div>
                   </div>
@@ -607,8 +660,7 @@ const BookingModal = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <input 
                         type="text" 
                         placeholder="Your Full Name" 
@@ -617,12 +669,24 @@ const BookingModal = () => {
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                       />
                       <input 
+                        type="email" 
+                        placeholder="Email Address" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input 
                         type="tel" 
                         placeholder="WhatsApp Number" 
                         className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 focus:border-emerald-600 outline-none transition-all text-slate-900 font-medium"
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
                       />
+                      <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-slate-400 text-xs font-medium">
+                         <Zap size={14} /> Confirmation emails will be sent.
+                      </div>
                     </div>
                     <textarea 
                       placeholder="Special Requirements (Optional)" 
@@ -638,13 +702,76 @@ const BookingModal = () => {
                     </button>
                     <button 
                       onClick={generateWhatsApp}
-                      disabled={!formData.name || !formData.phone || isCalculating}
+                      disabled={!formData.name || !formData.phone || !formData.email || isCalculating}
                       className="px-10 py-3 bg-[#25D366] text-white font-black rounded-full hover:bg-[#128C7E] transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"
                     >
                       <Send size={18} /> Confirm on WhatsApp
                     </button>
                   </div>
                 </div>
+              </motion.div>
+            )}
+
+            {step === 4 && (
+              <motion.div
+                key="step4"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-center py-10"
+              >
+                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                   <CheckCircle2 size={40} />
+                </div>
+                <h3 className="text-3xl font-black text-emerald-950 tracking-tighter mb-4">Booking Confirmed!</h3>
+                <p className="text-slate-500 mb-10 max-w-sm mx-auto font-medium">Your request has been sent to Kapila via WhatsApp. A confirmation email has also been sent to <span className="text-emerald-600 font-bold">{formData.email}</span>.</p>
+                
+                {/* Digital Receipt */}
+                <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 max-w-md mx-auto text-left shadow-xl relative overflow-hidden">
+                   <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-600" />
+                   <div className="flex justify-between items-start mb-8">
+                      <div>
+                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Receipt No.</p>
+                         <p className="font-black text-emerald-950">KT-{Math.floor(Math.random() * 10000)}</p>
+                      </div>
+                      <div className="text-right">
+                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</p>
+                         <p className="font-black text-emerald-950">{new Date().toLocaleDateString()}</p>
+                      </div>
+                   </div>
+
+                   <div className="space-y-4 mb-8">
+                      <div className="flex justify-between">
+                         <span className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Vehicle</span>
+                         <span className="text-emerald-950 font-black text-xs">{formData.vehicle?.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                         <span className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Duration</span>
+                         <span className="text-emerald-950 font-black text-xs">{formData.days} Day(s)</span>
+                      </div>
+                      {formData.nameboard && (
+                        <div className="flex justify-between">
+                           <span className="text-slate-400 text-xs font-bold uppercase tracking-tighter">Nameboard</span>
+                           <span className="text-emerald-600 font-black text-xs">{formData.nameboard}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between border-t border-slate-100 pt-4">
+                         <span className="text-slate-950 font-black text-sm uppercase">Total Price</span>
+                         <span className="text-emerald-600 font-black text-lg">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</span>
+                      </div>
+                   </div>
+
+                   <div className="p-4 bg-orange-50 border border-orange-100 rounded-xl">
+                      <p className="text-[9px] font-black text-orange-900 uppercase tracking-widest mb-1">Important Note</p>
+                      <p className="text-[10px] text-orange-800 font-medium">Customer must pay for fuel separately. Unlimited kilometers included for the duration.</p>
+                   </div>
+                </div>
+
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="mt-10 text-emerald-600 font-black text-xs uppercase tracking-widest hover:tracking-widest transition-all"
+                >
+                  Close Receipt
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
