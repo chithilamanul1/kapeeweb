@@ -23,5 +23,9 @@
     "LKR": 320,
     "USD": 1.08,
     "EUR": 1
+  },
+  "fuelConfig": {
+    "lkrPerLiter": 370,
+    "kmPerLiter": 8
   }
 }

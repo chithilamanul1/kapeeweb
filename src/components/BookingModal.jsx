@@ -15,7 +15,8 @@ const vehicles = [
     minRate: 40,
     multiplier: 1,
     image: '/vehicles/sedancar.png',
-    description: 'Perfect for couples or small families.'
+    description: 'Perfect for couples or small families.',
+    kmPerLiter: 8
   },
   { 
     id: 'van', 
@@ -26,7 +27,8 @@ const vehicles = [
     minRate: 56,
     multiplier: 1.4,
     image: '/vehicles/toyota-highroof.png',
-    description: 'Comfortable group travel with ample luggage space.'
+    description: 'Comfortable group travel with ample luggage space.',
+    kmPerLiter: 6
   }
 ];
 
@@ -42,8 +44,10 @@ const BookingModal = () => {
   
   const [formData, setFormData] = useState({
     vehicle: null,
+    tripType: 'airport',
     pickup: 'Bandaranaike International Airport (BIA)',
     destination: '',
+    stops: [], // Up to 4 stops
     date: '',
     time: '',
     flight: '',
@@ -153,10 +157,16 @@ const BookingModal = () => {
     try {
       const directionsService = new window.google.maps.DirectionsService();
       
+      const waypoints = formData.stops
+        .filter(s => s.trim() !== '')
+        .map(s => ({ location: s, stopover: true }));
+
       directionsService.route(
         {
           origin: formData.pickup,
           destination: formData.destination,
+          waypoints: waypoints,
+          optimizeWaypoints: true,
           travelMode: window.google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
@@ -164,7 +174,7 @@ const BookingModal = () => {
             if (directionsRenderer) {
                 directionsRenderer.setDirections(result);
             }
-            const distance = result.routes[0].legs[0].distance.value / 1000;
+            const distance = result.routes[0].legs.reduce((acc, leg) => acc + leg.distance.value, 0) / 1000;
             setDistanceInfo({ 
               km: Math.ceil(distance), 
               text: `${Math.ceil(distance)} KM trip` 
@@ -189,19 +199,20 @@ const BookingModal = () => {
   }, [step, calculateDistance]);
 
   const calculatePrice = (vehicle) => {
-    if (!vehicle || !pricing) return { lkr: 0, usd: 0, eur: 0 };
+    if (!vehicle || !pricing) return { lkr: 0, usd: 0, eur: 0, fuel: 0, total: 0 };
     
     let totalLKR = 0;
+    let fuelLKR = 0;
     
-    const isAirportTransfer = formData.pickup.toLowerCase().includes('airport') || formData.destination.toLowerCase().includes('airport');
+    const km = distanceInfo.km || 0;
+    fuelLKR = (km / (vehicle.kmPerLiter || 8)) * pricing.fuelConfig.lkrPerLiter;
 
-    if (formData.days > 1 && !isAirportTransfer) {
+    if (formData.tripType === 'tour' || formData.days > 1) {
       // Tour logic: Base rate * days * vehicle multiplier
       const totalEUR = pricing.tourDailyRate * formData.days * (vehicle.multiplier || 1);
       totalLKR = totalEUR * pricing.exchangeRates.LKR;
     } else {
       // Airport Transfer logic: Use vehicle-specific distance-based rate sheet
-      const km = distanceInfo.km || 0;
       const rateSheet = vehicle.id === 'van' ? pricing.vanRateSheet : pricing.sedanRateSheet;
       const rateConfig = rateSheet.find(r => km >= r.min && km < r.max) || rateSheet[rateSheet.length - 1];
       
@@ -210,14 +221,20 @@ const BookingModal = () => {
       } else {
         totalLKR = km * rateConfig.rate;
       }
-
+      // Airport transfers often include fuel in the flat rate sheet provided, 
+      // but if the user wants fuel SEPARATE for everything, I'll subtract it or add it.
+      // User said: "calculate the fuel charge that they must pay saparately as well"
+      // So I will treat totalLKR as the SERVICE FEE and fuelLKR as the fuel.
     }
 
-    const eur = totalLKR / pricing.exchangeRates.LKR;
+    const totalPayableLKR = totalLKR + fuelLKR;
+    const eur = totalPayableLKR / pricing.exchangeRates.LKR;
     const usd = eur * pricing.exchangeRates.USD;
 
     return { 
-      lkr: Math.round(totalLKR), 
+      service: Math.round(totalLKR),
+      fuel: Math.round(fuelLKR),
+      lkr: Math.round(totalPayableLKR), 
       usd: usd.toFixed(2), 
       eur: eur.toFixed(2) 
     };
@@ -292,16 +309,71 @@ const BookingModal = () => {
           <AnimatePresence mode="wait">
             {step === 1 && (
               <motion.div key="step1" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-8">
+                <div className="flex bg-slate-100 p-1 rounded-2xl mb-8 border border-slate-200">
+                  <button 
+                    onClick={() => setFormData({...formData, tripType: 'airport', pickup: 'Bandaranaike International Airport (BIA)'})} 
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${formData.tripType === 'airport' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    Airport Transfer
+                  </button>
+                  <button 
+                    onClick={() => setFormData({...formData, tripType: 'tour', pickup: ''})} 
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${formData.tripType === 'tour' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    Custom Tour
+                  </button>
+                </div>
+
                 <h3 className="text-2xl font-black text-emerald-950 tracking-tighter">Trip Essentials</h3>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
                     <div className="space-y-2">
                        <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Pickup</label>
-                       <div className="relative"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} /><input ref={pickupRef} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none" value={formData.pickup} onChange={(e) => setFormData({...formData, pickup: e.target.value})} /></div>
+                       <div className="relative"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} /><input ref={pickupRef} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none font-bold" value={formData.pickup} onChange={(e) => setFormData({...formData, pickup: e.target.value})} placeholder="Where to pick you up?" /></div>
                     </div>
+
+                    {formData.tripType === 'tour' && formData.stops.map((stop, idx) => (
+                      <div key={idx} className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Stop {idx + 1}</label>
+                        <div className="relative flex gap-2">
+                          <div className="relative flex-1">
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                            <input 
+                              type="text" 
+                              className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none text-sm" 
+                              value={stop} 
+                              onChange={(e) => {
+                                const newStops = [...formData.stops];
+                                newStops[idx] = e.target.value;
+                                setFormData({...formData, stops: newStops});
+                              }}
+                              placeholder="Add a stop..."
+                            />
+                          </div>
+                          <button 
+                            onClick={() => {
+                              const newStops = formData.stops.filter((_, i) => i !== idx);
+                              setFormData({...formData, stops: newStops});
+                            }}
+                            className="p-3 bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition-all"
+                          >
+                            <X size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                    {formData.tripType === 'tour' && formData.stops.length < 4 && (
+                      <button 
+                        onClick={() => setFormData({...formData, stops: [...formData.stops, '']})}
+                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-all"
+                      >
+                        <Plus size={14} strokeWidth={3} /> Add Another Stop
+                      </button>
+                    )}
+
                     <div className="space-y-2">
-                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Destination</label>
-                       <div className="relative"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} /><input ref={destRef} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none font-bold" value={formData.destination} onChange={(e) => setFormData({...formData, destination: e.target.value})} /></div>
+                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Final Destination</label>
+                       <div className="relative"><MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} /><input ref={destRef} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none font-bold" value={formData.destination} onChange={(e) => setFormData({...formData, destination: e.target.value})} placeholder="Final drop off location" /></div>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -375,7 +447,7 @@ const BookingModal = () => {
                        <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em] mb-3">Total Payable</p>
                        <p className="text-4xl md:text-5xl font-black text-emerald-950 tracking-tighter leading-none mb-6">Rs {prices.lkr.toLocaleString()}</p>
                        
-                       <div className="flex justify-center md:justify-end gap-3">
+                       <div className="flex justify-center md:justify-end gap-3 mb-6">
                           <div className="bg-white border border-slate-100 rounded-2xl px-5 py-3 text-center shadow-sm min-w-[100px]">
                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">USD Estimate</p>
                              <p className="text-sm font-black text-emerald-950">$ {prices.usd}</p>
@@ -383,6 +455,17 @@ const BookingModal = () => {
                           <div className="bg-white border border-slate-100 rounded-2xl px-5 py-3 text-center shadow-sm min-w-[100px]">
                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">EUR Estimate</p>
                              <p className="text-sm font-black text-emerald-950">€ {prices.eur}</p>
+                          </div>
+                       </div>
+
+                       <div className="space-y-2 border-t border-emerald-100/50 pt-6">
+                          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                             <span className="text-slate-400">Service Fee</span>
+                             <span className="text-emerald-950">Rs {prices.service.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                             <span className="text-slate-400">Estimated Fuel</span>
+                             <span className="text-emerald-600">Rs {prices.fuel.toLocaleString()}</span>
                           </div>
                        </div>
                     </div>
