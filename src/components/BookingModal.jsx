@@ -343,7 +343,7 @@ const BookingModal = () => {
                     <div key={v.id} onClick={() => { setFormData({ ...formData, vehicle: v }); setStep(3); }} className="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 flex flex-col h-full">
                       <div className="h-40 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
                         <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain" />
-                        <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">From {currencySymbols[currency]} {calculatePrice(v)}</div>
+                        <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">From {currencySymbols[currency]} {calculatePrice(v)[currency.toLowerCase()]}</div>
                       </div>
                       <h4 className="font-black text-emerald-950 text-sm mb-1">{v.name}</h4>
                       <p className="text-[11px] text-slate-400 font-medium">{v.description}</p>
