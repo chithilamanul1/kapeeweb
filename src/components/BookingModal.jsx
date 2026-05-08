@@ -193,7 +193,9 @@ const BookingModal = () => {
     
     let totalLKR = 0;
     
-    if (formData.days > 1) {
+    const isAirportTransfer = formData.pickup.toLowerCase().includes('airport') || formData.destination.toLowerCase().includes('airport');
+
+    if (formData.days > 1 && !isAirportTransfer) {
       // Tour logic: Base rate * days * vehicle multiplier
       const totalEUR = pricing.tourDailyRate * formData.days * (vehicle.multiplier || 1);
       totalLKR = totalEUR * pricing.exchangeRates.LKR;
@@ -208,7 +210,7 @@ const BookingModal = () => {
         totalLKR = km * rateConfig.rate;
       }
 
-      // Airport city overrides (Optional, if user wants to keep specific flat rates for these cities)
+      // Airport city overrides
       const destLower = formData.destination.toLowerCase();
       const fixedMatch = pricing.airportFlatRates.find(zone => zone.keywords.some(kw => destLower.includes(kw)));
       if (fixedMatch) {
@@ -311,16 +313,18 @@ const BookingModal = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                       <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Trip Duration (Days)</label>
-                       <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-1">
-                          {[1, 2, 3, 4, 5, 7].map(d => <button key={d} onClick={() => setFormData({...formData, days: d})} className={`flex-1 py-2 text-xs font-black rounded-lg ${formData.days === d ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}>{d}</button>)}
-                       </div>
-                       <p className="text-[9px] text-emerald-600 font-black uppercase">{formData.days > 1 ? `Multi-Day: €40 x ${formData.days} Days` : 'Standard Rates Apply'}</p>
-                    </div>
+                    {!(formData.pickup.toLowerCase().includes('airport') || formData.destination.toLowerCase().includes('airport')) && (
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Trip Duration (Days)</label>
+                        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-1">
+                            {[1, 2, 3, 4, 5, 7].map(d => <button key={d} onClick={() => setFormData({...formData, days: d})} className={`flex-1 py-2 text-xs font-black rounded-lg ${formData.days === d ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}>{d}</button>)}
+                        </div>
+                        <p className="text-[9px] text-emerald-600 font-black uppercase">{formData.days > 1 ? `Multi-Day: €40 x ${formData.days} Days` : 'Standard Rates Apply'}</p>
+                      </div>
+                    )}
                     <div className="space-y-2">
                        <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Passengers</label>
-                       <select className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 outline-none" value={formData.passengers} onChange={(e) => setFormData({...formData, passengers: parseInt(e.target.value)})}>
+                       <select className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 outline-none font-bold" value={formData.passengers} onChange={(e) => setFormData({...formData, passengers: parseInt(e.target.value)})}>
                           {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n} Pax</option>)}
                        </select>
                     </div>
