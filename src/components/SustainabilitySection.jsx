@@ -61,13 +61,14 @@ const SustainabilitySection = () => {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              className="text-center lg:text-left"
             >
-              <h2 className="mb-8 flex flex-col">
-                <span className="text-6xl md:text-8xl font-caveat text-emerald-600 leading-none">Philosophy</span>
-                <span className="text-5xl md:text-7xl font-black text-emerald-950 uppercase tracking-tighter -mt-4">OF SUSTAINABILITY</span>
+              <h2 className="mb-8 flex flex-col items-center lg:items-start">
+                <span className="text-5xl md:text-8xl font-caveat text-emerald-600 leading-none">Philosophy</span>
+                <span className="text-3xl md:text-7xl font-black text-emerald-950 uppercase tracking-tighter -mt-2 md:-mt-4">OF SUSTAINABILITY</span>
               </h2>
               
-              <div className="space-y-6 text-slate-500 text-lg font-medium leading-relaxed max-w-xl">
+              <div className="space-y-6 text-slate-500 text-base md:text-lg font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
                 <p>
                   Our commitment goes beyond travel. We are dedicated to preserving Sri Lanka&apos;s pristine natural beauty and supporting the communities that make our island so special. 
                 </p>
@@ -79,8 +80,8 @@ const SustainabilitySection = () => {
                 </p>
               </div>
 
-              <div className="mt-12 flex items-center gap-6">
-                <div className="w-16 h-[2px] bg-emerald-600/20" />
+              <div className="mt-12 flex items-center justify-center lg:justify-start gap-6">
+                <div className="w-16 h-[2px] bg-emerald-600/20 hidden md:block" />
                 <button 
                    onClick={() => window.dispatchEvent(new CustomEvent('openBooking'))}
                    className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 hover:tracking-[0.4em] transition-all"
