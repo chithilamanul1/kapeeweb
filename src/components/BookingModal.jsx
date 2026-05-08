@@ -493,15 +493,83 @@ const BookingModal = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <input type="date" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
-                  <input type="time" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} />
-                  <input type="text" placeholder="Flight No." className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.flight} onChange={(e) => setFormData({...formData, flight: e.target.value})} />
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Pickup Date</label>
+                    <input 
+                      type="date" 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                      min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                      value={formData.date} 
+                      onChange={(e) => setFormData({...formData, date: e.target.value})} 
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Pickup Time</label>
+                    <input 
+                      type="time" 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                      value={formData.time} 
+                      onChange={(e) => setFormData({...formData, time: e.target.value})} 
+                    />
+                  </div>
+                  {formData.tripType === 'airport' && (
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Flight Number</label>
+                      <input 
+                        type="text" 
+                        placeholder="UL 101" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                        value={formData.flight} 
+                        onChange={(e) => setFormData({...formData, flight: e.target.value})} 
+                      />
+                    </div>
+                  )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
-                  <input type="email" placeholder="Email" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
-                  <input type="tel" placeholder="WhatsApp Number" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
-                  <input type="text" placeholder="Nameboard Text" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.nameboard} onChange={(e) => setFormData({...formData, nameboard: e.target.value})} />
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Your Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="Enter full name" 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                      value={formData.name} 
+                      onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">WhatsApp Number</label>
+                      <input 
+                        type="tel" 
+                        placeholder="+94 7X XXX XXXX" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                        value={formData.phone} 
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Email Address</label>
+                      <input 
+                        type="email" 
+                        placeholder="email@example.com" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                        value={formData.email} 
+                        onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+                  {formData.tripType === 'airport' && (
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Nameboard Text</label>
+                      <input 
+                        type="text" 
+                        placeholder="Text for the airport sign" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                        value={formData.nameboard} 
+                        onChange={(e) => setFormData({...formData, nameboard: e.target.value})} 
+                      />
+                    </div>
+                  )}
                 </div>
                 <button onClick={generateWhatsApp} disabled={!formData.name || !formData.phone || !formData.email} className="w-full py-4 bg-[#25D366] text-white font-black rounded-full shadow-lg flex items-center justify-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"><Send size={18} /> Confirm on WhatsApp</button>
                 <button onClick={() => setStep(2)} className="text-slate-400 text-xs font-black uppercase tracking-widest flex items-center gap-2"><ChevronLeft size={16} /> Back</button>
