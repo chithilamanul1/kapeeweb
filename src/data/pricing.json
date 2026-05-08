@@ -1,14 +1,14 @@
 {
   "sedanRateSheet": [
-    { "min": 0, "max": 20, "type": "flat", "rate": 5000 },
-    { "min": 20, "max": 35, "type": "flat", "rate": 6500 },
-    { "min": 35, "max": 40, "type": "flat", "rate": 7000 },
-    { "min": 40, "max": 50, "type": "perKm", "rate": 180 },
-    { "min": 50, "max": 70, "type": "perKm", "rate": 150 },
-    { "min": 70, "max": 140, "type": "perKm", "rate": 140 },
-    { "min": 140, "max": 200, "type": "perKm", "rate": 120 },
-    { "min": 200, "max": 9999, "type": "perKm", "rate": 115 }
-  ],
+    { "min": 0, "max": 20, "type": "flat", "rate": 5500 },
+    { "min": 20, "max": 40, "type": "flat", "rate": 8250 },
+    { "min": 40, "max": 70, "type": "perKm", "rate": 190 },
+    { "min": 70, "max": 120, "type": "perKm", "rate": 180 },
+    { "min": 120, "max": 160, "type": "perKm", "rate": 145 },
+    { "min": 160, "max": 200, "type": "perKm", "rate": 135 },
+    { "min": 200, "max": 9999, "type": "perKm", "rate": 125 }
+],
+
   "vanRateSheet": [
     { "min": 0, "max": 20, "type": "flat", "rate": 7000 },
     { "min": 20, "max": 40, "type": "flat", "rate": 10000 },
