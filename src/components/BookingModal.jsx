@@ -340,6 +340,31 @@ const BookingModal = () => {
                    <div ref={mapRef} className="w-full h-full" />
                    {isCalculating && <div className="absolute inset-0 flex items-center justify-center bg-white/40"><Loader2 className="animate-spin text-emerald-600" size={24} /></div>}
                 </div>
+
+                {/* Trip Summary Preview */}
+                <div className="bg-emerald-50/50 border border-emerald-100 p-6 rounded-3xl space-y-4">
+                  <div className="flex justify-between items-start border-b border-emerald-100 pb-4">
+                    <div>
+                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest">Selected Vehicle</p>
+                      <p className="font-black text-emerald-950">{formData.vehicle?.name}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest">Estimated Price</p>
+                      <p className="text-2xl font-black text-emerald-950 leading-none">{currencySymbols[currency]} {calculatePrice(formData.vehicle)}</p>
+                      {distanceInfo.km > 0 && <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-widest mt-1">{distanceInfo.text}</p>}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 text-xs">
+                    <div>
+                       <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Route</p>
+                       <p className="text-emerald-950 font-bold leading-tight">{formData.pickup.split(',')[0]} → {formData.destination.split(',')[0]}</p>
+                    </div>
+                    <div>
+                       <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Duration</p>
+                       <p className="text-emerald-950 font-bold">{formData.days} Day(s)</p>
+                    </div>
+                  </div>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <input type="date" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
                   <input type="time" className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} />
