@@ -106,9 +106,9 @@ const BookingModal = () => {
     document.head.appendChild(script);
   }, []);
 
-  // Initialize Autocomplete
-  useEffect(() => {
-    if (!googleLoaded || !isOpen) return;
+  // Initialize Autocomplete for all fields
+  const initAutocomplete = useCallback((node, field, index = null) => {
+    if (!googleLoaded || !node || node.dataset.googleAutocomplete) return;
 
     const options = {
       componentRestrictions: { country: "lk" },
@@ -116,26 +116,33 @@ const BookingModal = () => {
       strictBounds: false,
     };
 
-    if (pickupRef.current) {
-        const pickupAutocomplete = new window.google.maps.places.Autocomplete(pickupRef.current, options);
-        pickupAutocomplete.addListener("place_changed", () => {
-          const place = pickupAutocomplete.getPlace();
-          if (place.formatted_address) {
-            setFormData(prev => ({ ...prev, pickup: place.formatted_address }));
-          }
-        });
-    }
+    const autocomplete = new window.google.maps.places.Autocomplete(node, options);
+    node.dataset.googleAutocomplete = 'true';
+    
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.formatted_address) return;
 
-    if (destRef.current) {
-        const destAutocomplete = new window.google.maps.places.Autocomplete(destRef.current, options);
-        destAutocomplete.addListener("place_changed", () => {
-          const place = destAutocomplete.getPlace();
-          if (place.formatted_address) {
-            setFormData(prev => ({ ...prev, destination: place.formatted_address }));
-          }
-        });
-    }
-  }, [googleLoaded, isOpen, step]);
+      setFormData(prev => {
+        if (field === 'pickup') return { ...prev, pickup: place.formatted_address };
+        if (field === 'destination') return { ...prev, destination: place.formatted_address };
+        if (field === 'stop' && index !== null) {
+          const newStops = [...prev.stops];
+          newStops[index] = place.formatted_address;
+          return { ...prev, stops: newStops };
+        }
+        return prev;
+      });
+    });
+  }, [googleLoaded]);
+
+  useEffect(() => {
+    if (!googleLoaded || !isOpen) return;
+    
+    // Re-initialize fixed refs if they exist
+    if (pickupRef.current) initAutocomplete(pickupRef.current, 'pickup');
+    if (destRef.current) initAutocomplete(destRef.current, 'destination');
+  }, [googleLoaded, isOpen, step, initAutocomplete]);
 
   // Initialize Map when step 3 is active
   useEffect(() => {
@@ -348,9 +355,10 @@ const BookingModal = () => {
                         <div className="relative flex gap-2">
                           <div className="relative flex-1">
                             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-                            <input 
+                             <input 
                               type="text" 
                               className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-4 outline-none text-sm" 
+                              ref={(el) => initAutocomplete(el, 'stop', idx)}
                               value={stop} 
                               onChange={(e) => {
                                 const newStops = [...formData.stops];
