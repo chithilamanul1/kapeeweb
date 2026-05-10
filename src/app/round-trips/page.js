@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import RoundTripBooking from '@/components/RoundTripBooking';
+import Image from 'next/image';
 
 export const metadata = {
   title: 'Round Trip Booking | Kapi Travels',
@@ -15,7 +16,7 @@ export default function RoundTripsPage() {
       {/* Header Section */}
       <section className="pt-32 pb-20 bg-emerald-950 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <img src="/hero-bg.png" alt="" className="w-full h-full object-cover" />
+          <Image src="/hero-bg.png" alt="" fill className="object-cover" priority />
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="flex items-center justify-center gap-3 mb-6">

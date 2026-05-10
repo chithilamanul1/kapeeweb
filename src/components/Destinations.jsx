@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { MapPin, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const destinations = [
   {
@@ -58,10 +59,11 @@ const Destinations = () => {
               transition={{ delay: index * 0.1 }}
               className="group relative h-[500px] rounded-[2.5rem] overflow-hidden cursor-pointer shadow-xl shadow-slate-200/50"
             >
-              <img 
+              <Image 
                 src={dest.image} 
                 alt={dest.name} 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                fill
+                className="object-cover transition-transform duration-1000 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               

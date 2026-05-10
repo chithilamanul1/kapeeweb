@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const AboutSection = () => {
   return (
@@ -39,9 +40,11 @@ const AboutSection = () => {
           >
              <div className="absolute -inset-4 bg-emerald-600/10 rounded-[2rem] blur-2xl group-hover:bg-emerald-600/20 transition-all duration-700" />
              <div className="relative rounded-[2rem] overflow-hidden border border-slate-100 shadow-xl">
-                <img 
+                <Image 
                   src="/clients/client-8.jpeg" 
                   alt="Kapila Tours Seeduwa Team" 
+                  width={800}
+                  height={600}
                   className="w-full h-auto hover:scale-105 transition-all duration-1000"
                 />
              </div>

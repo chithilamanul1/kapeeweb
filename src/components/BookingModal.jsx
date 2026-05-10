@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, ChevronLeft, Users, Briefcase, MapPin, Calendar, Clock, Send, CheckCircle2, PlaneTakeoff, Loader2, Zap, Map as MapIcon, Plus } from 'lucide-react';
 import pricingData from '@/data/pricing.json';
@@ -208,7 +209,7 @@ const BookingModal = () => {
     } catch (error) {
       setIsCalculating(false);
     }
-  }, [formData.pickup, formData.destination, googleLoaded, directionsRenderer]);
+  }, [formData.pickup, formData.destination, formData.stops, googleLoaded, directionsRenderer]);
 
   useEffect(() => {
     if (step === 3) calculateDistance();
@@ -428,7 +429,7 @@ const BookingModal = () => {
                   {vehicles.map((v) => (
                     <div key={v.id} onClick={() => { setFormData({ ...formData, vehicle: v }); setStep(3); }} className="p-4 rounded-2xl border-2 transition-all cursor-pointer bg-white border-slate-100 hover:border-emerald-200 flex flex-col h-full">
                       <div className="h-40 w-full rounded-xl overflow-hidden mb-4 relative bg-slate-50 flex items-center justify-center p-4">
-                        <img src={v.image} alt={v.name} className="max-h-full max-w-full object-contain" />
+                        <Image src={v.image} alt={v.name} fill className="object-contain" />
                         <div className="absolute top-2 right-2 bg-emerald-600 px-3 py-1.5 rounded-lg text-[10px] font-black text-white shadow-lg">From {currencySymbols[currency]} {calculatePrice(v)[currency.toLowerCase()]}</div>
                       </div>
                       <h4 className="font-black text-emerald-950 text-sm mb-1">{v.name}</h4>
@@ -453,7 +454,7 @@ const BookingModal = () => {
                   <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-emerald-100 pb-8">
                     <div className="flex items-center gap-6 w-full md:w-auto">
                        <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center p-3 shadow-sm border border-emerald-100/50">
-                          <img src={formData.vehicle?.image} alt={formData.vehicle?.name} className="max-h-full max-w-full object-contain" />
+                          <Image src={formData.vehicle?.image} alt={formData.vehicle?.name} fill className="object-contain" />
                        </div>
                        <div>
                           <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em] mb-1">Selected Vehicle</p>

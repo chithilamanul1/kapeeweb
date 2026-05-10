@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const SustainabilitySection = () => {
   return (
@@ -17,10 +18,11 @@ const SustainabilitySection = () => {
               viewport={{ once: true }}
               className="col-span-7 h-full relative rounded-[2rem] overflow-hidden shadow-2xl"
             >
-              <img 
+              <Image 
                 src="/images/elephant.png" 
                 alt="Elephant in Sri Lanka" 
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
+                fill
+                className="object-cover hover:scale-110 transition-transform duration-1000"
               />
             </motion.div>
             
@@ -33,10 +35,11 @@ const SustainabilitySection = () => {
                 transition={{ delay: 0.2 }}
                 className="h-2/3 rounded-[2rem] overflow-hidden shadow-xl"
               >
-                <img 
+                <Image 
                   src="/images/mountain.png" 
                   alt="Sri Lanka Mountains" 
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
+                  fill
+                  className="object-cover hover:scale-110 transition-transform duration-1000"
                 />
               </motion.div>
               <motion.div 
@@ -46,10 +49,11 @@ const SustainabilitySection = () => {
                 transition={{ delay: 0.4 }}
                 className="h-1/3 rounded-[2rem] overflow-hidden shadow-xl"
               >
-                <img 
+                <Image 
                   src="/images/waterfall.png" 
                   alt="Sri Lanka Waterfall" 
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
+                  fill
+                  className="object-cover hover:scale-110 transition-transform duration-1000"
                 />
               </motion.div>
             </div>

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Fuel, Map, Zap, Calendar } from 'lucide-react';
+import Image from 'next/image';
 
 const CampaignBanner = () => {
   return (
@@ -78,7 +79,7 @@ const CampaignBanner = () => {
                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                  className="relative z-10"
                >
-                  <img src="/vehicles/sedancar.png" alt="Tour Car" className="w-full drop-shadow-[0_20px_50px_rgba(16,185,129,0.3)]" />
+                  <Image src="/vehicles/sedancar.png" alt="Tour Car" width={500} height={300} className="w-full h-auto drop-shadow-[0_20px_50px_rgba(16,185,129,0.3)]" />
                </motion.div>
                
                {/* Abstract Glows */}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Clock, Navigation, ChevronRight, Plane, Car, Minus, Plus, Send, CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
 
 const vehicles = [
   { 
@@ -133,7 +134,7 @@ const RoundTripBooking = () => {
           <CheckCircle2 size={40} />
         </div>
         <h3 className="text-3xl font-serif font-black text-emerald-950 mb-4 uppercase tracking-tighter">Request Sent!</h3>
-        <p className="text-slate-500 mb-8 font-medium">We've received your round trip request. Redirecting to WhatsApp for confirmation...</p>
+        <p className="text-slate-500 mb-8 font-medium">We&apos;ve received your round trip request. Redirecting to WhatsApp for confirmation...</p>
         <button 
           onClick={() => setIsBooked(false)}
           className="text-emerald-600 font-black text-xs uppercase tracking-widest hover:underline"
@@ -178,7 +179,12 @@ const RoundTripBooking = () => {
                 className={`cursor-pointer p-6 rounded-3xl border-2 transition-all relative overflow-hidden group ${selectedVehicle.id === v.id ? 'border-emerald-600 bg-emerald-50/30' : 'border-slate-100 hover:border-emerald-200 bg-white'}`}
               >
                 <div className="aspect-video mb-4 relative flex items-center justify-center">
-                  <img src={v.image} alt={v.name} className="max-h-full object-contain transition-transform duration-500 group-hover:scale-110" />
+                  <Image 
+                    src={v.image} 
+                    alt={v.name} 
+                    fill
+                    className="object-contain transition-transform duration-500 group-hover:scale-110" 
+                  />
                 </div>
                 <h5 className="font-black text-emerald-950 uppercase tracking-tight mb-1">{v.name}</h5>
                 <p className="text-xl font-black text-emerald-600 tracking-tighter">Rs. {v.baseRate.toLocaleString()}.00</p>

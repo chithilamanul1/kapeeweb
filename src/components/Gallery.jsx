@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const clientImages = [
   { src: '/clients/client-1.jpeg', title: 'Airport Pickup' },
@@ -44,9 +45,11 @@ const Gallery = () => {
               transition={{ delay: index * 0.05 }}
               className="relative group rounded-[1.5rem] overflow-hidden cursor-pointer shadow-lg shadow-slate-200/50 break-inside-avoid"
             >
-              <img 
+              <Image 
                 src={img.src} 
                 alt={img.title} 
+                width={400}
+                height={500}
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-emerald-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">

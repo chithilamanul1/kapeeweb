@@ -5,6 +5,7 @@ import { MapPin, ArrowLeft, CheckCircle2, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import DestinationBookingButton from '@/components/DestinationBookingButton';
+import Image from 'next/image';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -38,10 +39,12 @@ export default async function DestinationPage({ params }) {
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
+          <Image 
             src={destination.heroImage} 
             alt={destination.name} 
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-emerald-950/60 backdrop-blur-[2px]" />
         </div>

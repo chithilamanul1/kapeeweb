@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 
 const Hero = () => {
   return (
@@ -14,10 +15,12 @@ const Hero = () => {
           transition={{ duration: 10, ease: "easeOut" }}
           className="w-full h-full"
         >
-          <img 
+          <Image 
             src="/hero-bg.png" 
             alt="Sri Lanka Scenery" 
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10 hidden md:block" />

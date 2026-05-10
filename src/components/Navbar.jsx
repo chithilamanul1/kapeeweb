@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
+import Image from 'next/image';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,7 +38,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2 md:gap-3">
             <div className="relative group">
                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300">
-                  <img src="/logo.png" alt="Kapee Logo" className="w-full h-full object-cover" />
+                  <Image src="/logo.png" alt="Kapee Logo" fill className="object-cover" />
                </div>
                <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-gold rounded-full border-2 border-white shadow-sm" />
             </div>
