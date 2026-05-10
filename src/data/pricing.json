@@ -27,10 +27,5 @@
   "fuelConfig": {
     "lkrPerLiter": 370,
     "kmPerLiter": 8
-  },
-  "roundTripVehicles": [
-    { "id": "mini", "name": "Mini", "baseRate": 4000 },
-    { "id": "sedan", "name": "Sedan", "baseRate": 8000 },
-    { "id": "vezel", "name": "Vezel", "baseRate": 15000 }
-  ]
+  }
 }
