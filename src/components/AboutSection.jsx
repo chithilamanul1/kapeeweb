@@ -27,7 +27,7 @@ const AboutSection = () => {
                 Our deep roots in <span className="text-emerald-600 font-black">Seeduwa</span> allow us to offer unparalleled local knowledge, ensuring our guests discover hidden gems that ordinary tours miss. Whether you search for &ldquo;Seeduwa tours&rdquo; or &ldquo;Kapila tours&rdquo;, you will find a team dedicated to your comfort.
               </p>
               <p>
-                We take pride in our diverse fleet of premium vehicles and our commitment to safety, making <span className="text-emerald-600 font-black">Kapi Travels</span> the preferred choice for airport transfers and multi-day island excursions.
+                We take pride in our diverse fleet of premium vehicles and our commitment to safety, making <span className="text-emerald-600 font-black">Kapee Travels</span> the preferred choice for airport transfers and multi-day island excursions.
               </p>
             </div>
           </motion.div>

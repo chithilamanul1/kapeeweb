@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Privacy Policy | Kapi Travels and Tours',
-  description: 'Learn how Kapi Travels and Tours handles your personal information.',
+  title: 'Privacy Policy | Kapee Travels and Tours',
+  description: 'Learn how Kapee Travels and Tours handles your personal information.',
 };
 
 export default function PrivacyPolicy() {
@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
         <div className="space-y-8 text-slate-600 leading-relaxed">
           <section>
             <h2 className="text-xl font-black text-emerald-900 uppercase tracking-widest mb-4">1. Introduction</h2>
-            <p>Welcome to Kapi Travels and Tours. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy or our practices with regards to your personal information, please contact us.</p>
+            <p>Welcome to Kapee Travels and Tours. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy or our practices with regards to your personal information, please contact us.</p>
           </section>
 
           <section>

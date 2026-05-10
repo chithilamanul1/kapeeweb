@@ -24,8 +24,8 @@ const caveat = Caveat({
 
 export const metadata = {
   title: {
-    default: 'Kapi Travels and Tours | Explore Sri Lanka in Comfort & Style',
-    template: '%s | Kapi Travels'
+    default: 'Kapee Travels and Tours | Explore Sri Lanka in Comfort & Style',
+    template: '%s | Kapee Travels'
   },
   description: 'Premium travel agency in Sri Lanka. Airport transfers, custom tours, and corporate travel with N Kapila Silva. Experience Sri Lanka like never before.',
   keywords: [
@@ -48,22 +48,22 @@ export const metadata = {
     'N Kapila Silva tours'
   ],
   authors: [{ name: 'N Kapila Silva' }],
-  creator: 'Kapi Travels',
+  creator: 'Kapee Travels',
   metadataBase: new URL('https://kapeeweb.vercel.app'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Kapi Travels and Tours | Premium Sri Lanka Travel',
+    title: 'Kapee Travels and Tours | Premium Sri Lanka Travel',
     description: 'Explore Sri Lanka in comfort and style with bespoke tours and reliable airport transfers.',
     url: 'https://kapitravels.lk',
-    siteName: 'Kapi Travels and Tours',
+    siteName: 'Kapee Travels and Tours',
     images: [
       {
         url: '/hero-bg.png',
         width: 1200,
         height: 630,
-        alt: 'Sri Lanka Landscape - Kapi Travels',
+        alt: 'Sri Lanka Landscape - Kapee Travels',
       },
     ],
     locale: 'en_US',
@@ -71,7 +71,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kapi Travels and Tours | Premium Sri Lanka Travel',
+    title: 'Kapee Travels and Tours | Premium Sri Lanka Travel',
     description: 'Explore Sri Lanka in comfort and style with bespoke tours and reliable airport transfers.',
     images: ['/hero-bg.png'],
   },

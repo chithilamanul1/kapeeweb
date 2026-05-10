@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Terms of Service | Kapi Travels and Tours',
-  description: 'Terms and conditions for using Kapi Travels and Tours services.',
+  title: 'Terms of Service | Kapee Travels and Tours',
+  description: 'Terms and conditions for using Kapee Travels and Tours services.',
 };
 
 export default function TermsOfService() {
@@ -41,12 +41,12 @@ export default function TermsOfService() {
 
           <section>
             <h2 className="text-xl font-black text-emerald-900 uppercase tracking-widest mb-4">5. Limitation of Liability</h2>
-            <p>Kapi Travels and Tours shall not be liable for any indirect, incidental, special, consequential or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses.</p>
+            <p>Kapee Travels and Tours shall not be liable for any indirect, incidental, special, consequential or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-black text-emerald-900 uppercase tracking-widest mb-4">6. Governing Law</h2>
-            <p>These terms shall be governed by and defined following the laws of Sri Lanka. Kapi Travels and Tours and yourself irrevocably consent that the courts of Sri Lanka shall have exclusive jurisdiction to resolve any dispute which may arise in connection with these terms.</p>
+            <p>These terms shall be governed by and defined following the laws of Sri Lanka. Kapee Travels and Tours and yourself irrevocably consent that the courts of Sri Lanka shall have exclusive jurisdiction to resolve any dispute which may arise in connection with these terms.</p>
           </section>
         </div>
         

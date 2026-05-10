@@ -4,8 +4,8 @@ import RoundTripBooking from '@/components/RoundTripBooking';
 import Image from 'next/image';
 
 export const metadata = {
-  title: 'Round Trip Booking | Kapi Travels',
-  description: 'Book a premium round trip or city ride with Kapi Travels. Fixed rates for Mini, Sedan, and Vezel vehicles.',
+  title: 'Round Trip Booking | Kapee Travels',
+  description: 'Book a premium round trip or city ride with Kapee Travels. Fixed rates for Mini, Sedan, and Vezel vehicles.',
 };
 
 export default function RoundTripsPage() {

@@ -40,7 +40,7 @@ export async function POST(req) {
         </div>
 
         <p style="margin-top: 20px;">If you have any questions, please contact us on WhatsApp at +94 76 874 3357.</p>
-        <p>Safe Travels,<br/><strong>The Kapi Travels Team</strong></p>
+        <p>Safe Travels,<br/><strong>The Kapee Travels Team</strong></p>
       </div>
     `;
 
@@ -52,7 +52,7 @@ export async function POST(req) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Kapi Travels <onboarding@resend.dev>', // Should be updated to custom domain once verified
+        from: 'Kapee Travels <onboarding@resend.dev>', // Should be updated to custom domain once verified
         to: [email],
         subject: `Booking Confirmed: ${pickup} to ${destination}`,
         html: emailHtml,
