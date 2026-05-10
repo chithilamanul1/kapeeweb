@@ -31,7 +31,29 @@ const vehicles = [
 
 const RoundTripBooking = () => {
   const [tab, setTab] = useState('airport');
+  const [pricing, setPricing] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(vehicles[0]);
+
+  useEffect(() => {
+    fetch('/api/pricing')
+      .then(res => res.json())
+      .then(data => {
+        setPricing(data);
+        if (data.roundTripVehicles) {
+          // Sync vehicles with remote data
+          const syncedVehicles = vehicles.map(v => {
+            const remote = data.roundTripVehicles.find(rv => rv.id === v.id);
+            return remote ? { ...v, baseRate: remote.baseRate, name: remote.name } : v;
+          });
+          // Update selected vehicle if it was part of the map
+          setSelectedVehicle(prev => {
+             const remote = data.roundTripVehicles.find(rv => rv.id === prev.id);
+             return remote ? { ...prev, baseRate: remote.baseRate, name: remote.name } : prev;
+          });
+        }
+      })
+      .catch(err => console.error("Failed to fetch pricing:", err));
+  }, []);
   const [hours, setHours] = useState(2);
   const [selectedKm, setSelectedKm] = useState(10);
   const [locations, setLocations] = useState(['', '']);
@@ -171,7 +193,7 @@ const RoundTripBooking = () => {
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Select Vehicle Class</h4>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {vehicles.map((v) => (
+            {(pricing?.roundTripVehicles || vehicles).map((v) => (
               <motion.div 
                 key={v.id}
                 whileHover={{ y: -5 }}

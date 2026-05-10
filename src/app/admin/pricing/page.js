@@ -147,6 +147,12 @@ export default function AdminPricing() {
            >
              Van Rates
            </button>
+           <button 
+             onClick={() => setActiveTab('roundTripVehicles')}
+             className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${activeTab === 'roundTripVehicles' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
+           >
+             Round Trip
+           </button>
         </div>
 
         <div className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden mb-8 md:mb-12">
@@ -157,17 +163,21 @@ export default function AdminPricing() {
                 </div>
                 <div>
                    <h2 className="font-black text-emerald-950 uppercase tracking-tight text-sm md:text-base">
-                     {activeTab === 'sedanRateSheet' ? 'Sedan' : 'Van'} Rate Sheet (LKR)
+                     {activeTab === 'sedanRateSheet' ? 'Sedan' : activeTab === 'vanRateSheet' ? 'Van' : 'Round Trip'} Rate Sheet (LKR)
                    </h2>
-                   <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-widest">Distance-based pricing matrix</p>
+                   <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                     {activeTab === 'roundTripVehicles' ? 'Fixed base rates for ride services' : 'Distance-based pricing matrix'}
+                   </p>
                 </div>
              </div>
-             <button 
-               onClick={() => addRow(activeTab)}
-               className="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-100 transition-all"
-             >
-               <Plus size={14} /> Add Row
-             </button>
+             {activeTab !== 'roundTripVehicles' && (
+               <button 
+                 onClick={() => addRow(activeTab)}
+                 className="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-100 transition-all"
+               >
+                 <Plus size={14} /> Add Row
+               </button>
+             )}
           </div>
           
           <div className="overflow-x-auto">
@@ -175,54 +185,97 @@ export default function AdminPricing() {
               <table className="w-full">
                 <thead>
                   <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-slate-400 font-black border-b border-slate-50">
-                    <th className="pb-4">Min (KM)</th>
-                    <th className="pb-4">Max (KM)</th>
-                    <th className="pb-4">Type</th>
-                    <th className="pb-4">Rate (LKR)</th>
+                    {activeTab === 'roundTripVehicles' ? (
+                      <>
+                        <th className="pb-4">Vehicle Name</th>
+                        <th className="pb-4">Base Rate (LKR)</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="pb-4">Min (KM)</th>
+                        <th className="pb-4">Max (KM)</th>
+                        <th className="pb-4">Type</th>
+                        <th className="pb-4">Rate (LKR)</th>
+                      </>
+                    )}
                     <th className="pb-4 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {pricing[activeTab].map((range, idx) => (
+                  {pricing[activeTab].map((item, idx) => (
                     <tr key={idx} className="group hover:bg-slate-50/50 transition-all">
-                      <td className="py-4">
-                        <input 
-                          type="number" 
-                          value={range.min} 
-                          onChange={(e) => updateRate(activeTab, idx, 'min', e.target.value)}
-                          className="w-20 md:w-24 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-bold outline-none text-slate-900"
-                        />
-                      </td>
-                      <td className="py-4">
-                        <input 
-                          type="number" 
-                          value={range.max} 
-                          onChange={(e) => updateRate(activeTab, idx, 'max', e.target.value)}
-                          className="w-20 md:w-24 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-bold outline-none text-slate-900"
-                        />
-                      </td>
-                      <td className="py-4 text-xs font-black">
-                        <select 
-                          value={range.type} 
-                          onChange={(e) => updateRate(activeTab, idx, 'type', e.target.value)}
-                          className={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest outline-none border-none ${range.type === 'flat' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}
-                        >
-                          <option value="flat">Flat Rate</option>
-                          <option value="perKm">Per KM</option>
-                        </select>
-                      </td>
-                      <td className="py-4">
-                         <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black text-slate-400">LKR</span>
+                      {activeTab === 'roundTripVehicles' ? (
+                        <>
+                          <td className="py-4">
+                            <input 
+                              type="text" 
+                              value={item.name} 
+                              onChange={(e) => {
+                                const newSheet = [...pricing.roundTripVehicles];
+                                newSheet[idx].name = e.target.value;
+                                setPricing({...pricing, roundTripVehicles: newSheet});
+                              }}
+                              className="w-full max-w-[200px] bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-bold outline-none text-slate-900"
+                            />
+                          </td>
+                          <td className="py-4">
+                            <div className="flex items-center gap-2">
+                               <span className="text-[10px] font-black text-slate-400">LKR</span>
+                               <input 
+                                 type="number" 
+                                 value={item.baseRate} 
+                                 onChange={(e) => {
+                                   const newSheet = [...pricing.roundTripVehicles];
+                                   newSheet[idx].baseRate = parseFloat(e.target.value);
+                                   setPricing({...pricing, roundTripVehicles: newSheet});
+                                 }}
+                                 className="w-32 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-black outline-none text-slate-900"
+                               />
+                            </div>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-4">
                             <input 
                               type="number" 
-                              value={range.rate} 
-                              onChange={(e) => updateRate(activeTab, idx, 'rate', e.target.value)}
-                              className="w-24 md:w-32 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-black outline-none text-slate-900"
+                              value={item.min} 
+                              onChange={(e) => updateRate(activeTab, idx, 'min', e.target.value)}
+                              className="w-20 md:w-24 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-bold outline-none text-slate-900"
                             />
-                            <span className="text-[10px] font-bold text-slate-400">{range.type === 'perKm' ? '/KM' : ''}</span>
-                         </div>
-                      </td>
+                          </td>
+                          <td className="py-4">
+                            <input 
+                              type="number" 
+                              value={item.max} 
+                              onChange={(e) => updateRate(activeTab, idx, 'max', e.target.value)}
+                              className="w-20 md:w-24 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-bold outline-none text-slate-900"
+                            />
+                          </td>
+                          <td className="py-4 text-xs font-black">
+                            <select 
+                              value={item.type} 
+                              onChange={(e) => updateRate(activeTab, idx, 'type', e.target.value)}
+                              className={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest outline-none border-none ${item.type === 'flat' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}
+                            >
+                              <option value="flat">Flat Rate</option>
+                              <option value="perKm">Per KM</option>
+                            </select>
+                          </td>
+                          <td className="py-4">
+                             <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black text-slate-400">LKR</span>
+                                <input 
+                                  type="number" 
+                                  value={item.rate} 
+                                  onChange={(e) => updateRate(activeTab, idx, 'rate', e.target.value)}
+                                  className="w-24 md:w-32 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-xs font-black outline-none text-slate-900"
+                                />
+                                <span className="text-[10px] font-bold text-slate-400">{item.type === 'perKm' ? '/KM' : ''}</span>
+                             </div>
+                          </td>
+                        </>
+                      )}
                       <td className="py-4 text-center">
                         <button 
                           onClick={() => removeRow(activeTab, idx)}

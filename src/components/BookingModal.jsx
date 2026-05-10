@@ -38,7 +38,14 @@ const FIXED_RATES = [];
 const BookingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [pricing] = useState(pricingData);
+  const [pricing, setPricing] = useState(pricingData);
+  
+  useEffect(() => {
+    fetch('/api/pricing')
+      .then(res => res.json())
+      .then(data => setPricing(data))
+      .catch(err => console.error("Failed to fetch pricing:", err));
+  }, []);
   const [currency, setCurrency] = useState('LKR');
   const [isCalculating, setIsCalculating] = useState(false);
   const [distanceInfo, setDistanceInfo] = useState({ km: 0, text: '' });
