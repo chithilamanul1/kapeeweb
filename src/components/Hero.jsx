@@ -124,7 +124,7 @@ const Hero = () => {
                 </div>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                "The most professional transfer service I've experienced in Sri Lanka. Truly premium."
+                &quot;The most professional transfer service I&apos;ve experienced in Sri Lanka. Truly premium.&quot;
               </p>
               <p className="text-[10px] font-black text-emerald-600 mt-3 uppercase tracking-widest">— James W.</p>
             </motion.div>

@@ -540,7 +540,7 @@ const BookingModal = () => {
                         value={formData.flight} 
                         onChange={(e) => setFormData({...formData, flight: e.target.value})} 
                       />
-                      {!formData.isNoBoard && !formData.flight && <p className="text-[9px] text-orange-600 font-bold uppercase px-1">Required unless 'No Board' selected</p>}
+                      {!formData.isNoBoard && !formData.flight && <p className="text-[9px] text-orange-600 font-bold uppercase px-1">Required unless &apos;No Board&apos; selected</p>}
                     </div>
                   )}
                 </div>
