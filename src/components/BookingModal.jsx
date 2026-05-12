@@ -66,7 +66,8 @@ const BookingModal = () => {
     highlight: '€40 One Day Deal',
     days: 1,
     nameboard: '',
-    email: ''
+    email: '',
+    isNoBoard: false
   });
 
   const exchangeRates = { LKR: 320, USD: 1.08, EUR: 1 };
@@ -252,8 +253,8 @@ const BookingModal = () => {
     }
 
     const totalPayableLKR = totalLKR + fuelLKR;
-    const eur = totalPayableLKR / pricing.exchangeRates.LKR;
-    const usd = eur * pricing.exchangeRates.USD;
+    const eur = totalPayableLKR / (pricing.exchangeRates?.LKR || 320);
+    const usd = eur * (pricing.exchangeRates?.USD || 1.08);
 
     return { 
       service: Math.round(totalLKR),
@@ -529,14 +530,17 @@ const BookingModal = () => {
                   </div>
                   {formData.tripType === 'airport' && (
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Flight Number</label>
+                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">
+                        Flight Number {!formData.isNoBoard && <span className="text-red-500">*</span>}
+                      </label>
                       <input 
                         type="text" 
                         placeholder="UL 101" 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                        className={`w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900 transition-all ${!formData.isNoBoard && !formData.flight ? 'border-orange-200' : ''}`} 
                         value={formData.flight} 
                         onChange={(e) => setFormData({...formData, flight: e.target.value})} 
                       />
+                      {!formData.isNoBoard && !formData.flight && <p className="text-[9px] text-orange-600 font-bold uppercase px-1">Required unless 'No Board' selected</p>}
                     </div>
                   )}
                 </div>
@@ -574,19 +578,34 @@ const BookingModal = () => {
                     </div>
                   </div>
                   {formData.tripType === 'airport' && (
-                    <div className="space-y-1">
-                      <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black px-1">Nameboard Text</label>
+                    <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] uppercase tracking-widest text-slate-400 font-black">Nameboard Text</label>
+                        <button 
+                          onClick={() => setFormData({...formData, isNoBoard: !formData.isNoBoard, nameboard: !formData.isNoBoard ? 'No Board' : ''})}
+                          className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${formData.isNoBoard ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-200 text-slate-500 hover:bg-slate-300'}`}
+                        >
+                          {formData.isNoBoard ? '✓ No Board' : 'No Board Requested?'}
+                        </button>
+                      </div>
                       <input 
                         type="text" 
-                        placeholder="Text for the airport sign" 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold text-slate-900" 
+                        disabled={formData.isNoBoard}
+                        placeholder={formData.isNoBoard ? "No nameboard requested" : "Text for the airport sign"} 
+                        className={`w-full bg-white border border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-900 outline-none transition-all ${formData.isNoBoard ? 'opacity-50 grayscale cursor-not-allowed' : 'focus:border-emerald-500'}`} 
                         value={formData.nameboard} 
                         onChange={(e) => setFormData({...formData, nameboard: e.target.value})} 
                       />
                     </div>
                   )}
                 </div>
-                <button onClick={generateWhatsApp} disabled={!formData.name || !formData.phone || !formData.email} className="w-full py-4 bg-[#25D366] text-white font-black rounded-full shadow-lg flex items-center justify-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"><Send size={18} /> Confirm on WhatsApp</button>
+                <button 
+                  onClick={generateWhatsApp} 
+                  disabled={!formData.name || !formData.phone || !formData.email || (formData.tripType === 'airport' && !formData.isNoBoard && !formData.flight)} 
+                  className="w-full py-4 bg-[#25D366] text-white font-black rounded-full shadow-lg flex items-center justify-center gap-3 disabled:opacity-50 text-xs uppercase tracking-widest"
+                >
+                  <Send size={18} /> Confirm on WhatsApp
+                </button>
                 <button onClick={() => setStep(2)} className="text-slate-400 text-xs font-black uppercase tracking-widest flex items-center gap-2"><ChevronLeft size={16} /> Back</button>
               </motion.div>
             )}
