@@ -24,46 +24,44 @@ const caveat = Caveat({
 
 export const metadata = {
   title: {
-    default: 'Kapee Travels and Tours | Explore Sri Lanka in Comfort & Style',
-    template: '%s | Kapee Travels'
+    default: 'Kapee Tours | Best Travel Agency in Seeduwa, Ja-Ela & Negombo',
+    template: '%s | Kapee Tours Sri Lanka'
   },
-  description: 'Premium travel agency in Sri Lanka. Airport transfers, custom tours, and corporate travel with N Kapila Silva. Experience Sri Lanka like never before.',
+  description: 'Premium travel agency specializing in airport transfers and custom tours near Seeduwa, Ja-Ela, and Negombo. Experience Sri Lanka with Kapee Tours - reliable, professional, and on-time.',
   keywords: [
+    'Kapee Tours', 'Kapee Travels', 'Tour near Seeduwa', 'Seeduwa tours', 'Ja-Ela tours', 'Negombo tours',
+    'Airport Taxi Seeduwa', 'Airport Transfer Ja-Ela', 'Negombo airport taxi', 'Best travel agency Seeduwa',
     'Airport Taxi', 'Taxi Service', 'Airport Transfer', 'Tourism Support', 'Ride With Us', 
     'Travel Easy', 'Book Now', 'On Time Every Time', 'Explore With Us', 'Safe Travel',
     'Your Ride Is Here', 'Hassle Free Travel', 'Best Taxi Service', 'Trusted By Thousands',
     'Customer First', 'Travel In Comfort', 'Local Tours', 'City Tours', 'Tour With Us',
     'Discover More', 'To The Airport', 'From The Airport', 'Airport Pickup', 'Airport Drop Off',
     'Flight Transfer', 'Ride To Airport', 'Never Miss A Flight', 'Reliable Taxi', 'Travel Made Easy',
-    'Taxi Near Me', '24x7 Taxi', 'Kapee Tours', 'Kapila Tours Seeduwa', 'Sri Lanka Taxi',
-    'kapee tours', 
+    'Taxi Near Me', '24x7 Taxi', 'Kapila Tours Seeduwa', 'Sri Lanka Taxi',
     'kapila tours', 
-    'tours seeduwa', 
-    'seeduwa tours', 
     'airport taxi sri lanka', 
     'travel agency seeduwa', 
     'custom tours sri lanka', 
     'premium travel sri lanka', 
-    'Kapee travels', 
     'N Kapila Silva tours'
   ],
   authors: [{ name: 'N Kapila Silva' }],
-  creator: 'Kapee Travels',
-  metadataBase: new URL('https://kapeeweb.vercel.app'),
+  creator: 'Kapee Tours',
+  metadataBase: new URL('https://kapitravels.lk'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Kapee Travels and Tours | Premium Sri Lanka Travel',
-    description: 'Explore Sri Lanka in comfort and style with bespoke tours and reliable airport transfers.',
+    title: 'Kapee Tours | Premium Sri Lanka Travel & Airport Transfers',
+    description: 'Bespoke tours and reliable airport transfers near Seeduwa, Ja-Ela, and Negombo. Explore Sri Lanka in comfort and style.',
     url: 'https://kapitravels.lk',
-    siteName: 'Kapee Travels and Tours',
+    siteName: 'Kapee Tours',
     images: [
       {
         url: '/hero.jpg',
         width: 1200,
         height: 630,
-        alt: 'Sri Lanka Landscape - Kapee Travels',
+        alt: 'Kapee Tours - Premium Sri Lanka Travel',
       },
     ],
     locale: 'en_US',
@@ -71,8 +69,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kapee Travels and Tours | Premium Sri Lanka Travel',
-    description: 'Explore Sri Lanka in comfort and style with bespoke tours and reliable airport transfers.',
+    title: 'Kapee Tours | Premium Sri Lanka Travel',
+    description: 'Explore Sri Lanka in comfort and style with bespoke tours and reliable airport transfers near Seeduwa.',
     images: ['/hero.jpg'],
   },
   robots: {
@@ -97,6 +95,57 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${caveat.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'TravelAgency',
+              'name': 'Kapee Tours',
+              'alternateName': 'Kapee Travels',
+              'description': 'Premium travel agency in Sri Lanka specializing in airport transfers and custom tours near Seeduwa, Ja-Ela, and Negombo.',
+              'url': 'https://kapitravels.lk',
+              'logo': 'https://kapitravels.lk/logo.png',
+              'image': 'https://kapitravels.lk/hero.jpg',
+              'address': {
+                '@type': 'PostalAddress',
+                'addressLocality': 'Seeduwa',
+                'addressRegion': 'Western Province',
+                'addressCountry': 'LK'
+              },
+              'geo': {
+                '@type': 'GeoCoordinates',
+                'latitude': '7.1234', // Approximate for Seeduwa
+                'longitude': '79.8890'
+              },
+              'telephone': '+94770000000', // Update with real phone if known
+              'priceRange': '$$',
+              'areaServed': ['Seeduwa', 'Ja-Ela', 'Negombo', 'Colombo', 'Bandaranaike International Airport'],
+              'hasOfferCatalog': {
+                '@type': 'OfferCatalog',
+                'name': 'Travel Services',
+                'itemListElement': [
+                  {
+                    '@type': 'Offer',
+                    'itemOffered': {
+                      '@type': 'Service',
+                      'name': 'Airport Transfers'
+                    }
+                  },
+                  {
+                    '@type': 'Offer',
+                    'itemOffered': {
+                      '@type': 'Service',
+                      'name': 'Custom Island-wide Tours'
+                    }
+                  }
+                ]
+              }
+            })
+          }}
+        />
+      </head>
       <body className="font-sans antialiased text-white selection:bg-gold/30" suppressHydrationWarning>
         <Suspense fallback={<div className="h-screen bg-primary flex items-center justify-center text-gold font-serif text-2xl">Loading...</div>}>
           {children}
