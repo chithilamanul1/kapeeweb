@@ -90,7 +90,7 @@ const Hero = () => {
       </div>
 
       {/* Decorative Side Text */}
-      <div className="absolute left-10 top-1/2 -translate-y-1/2 -rotate-90 origin-left hidden xl:block">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 -rotate-90 origin-left hidden xl:block">
         <span className="text-[10px] font-black uppercase tracking-[1em] text-white/20">
           Discover The Paradise Isle
         </span>
