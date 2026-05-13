@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-8">
             <div className="flex items-center gap-3">
-               <div className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center border border-emerald-900/50">
+               <div className="relative w-16 h-16 rounded-full overflow-hidden flex items-center justify-center border border-emerald-900/50">
                   <Image src="/logo.png" alt="Kapee Logo" fill className="object-cover" />
                </div>
                <div className="flex flex-col">

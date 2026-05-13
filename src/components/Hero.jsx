@@ -1,13 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronRight, Star, ArrowRight, Play } from 'lucide-react';
-import Image from 'next/image';
+import { Star, ArrowRight, Play } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 md:pt-0">
-      {/* Background Video with Overlay */}
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 md:pt-0 bg-emerald-950">
+      {/* Background Video Layer */}
       <div className="absolute inset-0 z-0">
         <video 
           autoPlay 
@@ -19,17 +18,19 @@ const Hero = () => {
           <source src="/hero-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/60 to-transparent z-10" />
+        
+        {/* Dark Overlay for better contrast against the video */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/50 to-emerald-950/30 z-10" />
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl">
-          {/* Text Content */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
+            {/* Trust Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-8 backdrop-blur-md">
               <Star size={14} className="text-emerald-400 fill-emerald-400" />
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-50">
@@ -37,6 +38,7 @@ const Hero = () => {
               </span>
             </div>
             
+            {/* Main Heading */}
             <h1 className="text-5xl md:text-8xl font-serif font-black mb-8 leading-[1.1] tracking-tighter text-white">
               Elegance in <br />
               <span className="text-emerald-400 italic relative">
@@ -51,6 +53,7 @@ const Hero = () => {
               Experience the soul of Sri Lanka with <span className="text-white font-bold">Kapee Travels</span>. From elite airport transfers to bespoke island-wide expeditions.
             </p>
 
+            {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <button 
                 className="group relative px-10 py-6 bg-emerald-500 text-emerald-950 rounded-full text-[11px] uppercase tracking-[0.3em] font-black overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-emerald-500/20"
@@ -70,7 +73,7 @@ const Hero = () => {
               </button>
             </div>
 
-            {/* Stats/Trust Badge */}
+            {/* Stats */}
             <div className="mt-16 flex items-center gap-8 border-t border-white/10 pt-8">
               <div>
                 <p className="text-2xl font-black text-white">12k+</p>
@@ -86,7 +89,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Side Decorative Text */}
+      {/* Decorative Side Text */}
       <div className="absolute left-10 top-1/2 -translate-y-1/2 -rotate-90 origin-left hidden xl:block">
         <span className="text-[10px] font-black uppercase tracking-[1em] text-white/20">
           Discover The Paradise Isle

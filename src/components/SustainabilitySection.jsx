@@ -33,7 +33,7 @@ const SustainabilitySection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="h-2/3 rounded-[2rem] overflow-hidden shadow-xl"
+                className="relative h-2/3 rounded-[2rem] overflow-hidden shadow-xl"
               >
                 <Image 
                   src="/images/mountain.png" 
@@ -47,7 +47,7 @@ const SustainabilitySection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
-                className="h-1/3 rounded-[2rem] overflow-hidden shadow-xl"
+                className="relative h-1/3 rounded-[2rem] overflow-hidden shadow-xl"
               >
                 <Image 
                   src="/images/waterfall.png" 

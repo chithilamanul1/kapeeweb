@@ -36,7 +36,7 @@ const Navbar = () => {
          <Link href="/" className="relative group">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="relative group">
-               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300">
+               <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300">
                   <Image src="/logo.png" alt="Kapee Logo" fill className="object-cover" />
                </div>
                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-gold rounded-full border-2 border-white shadow-sm" />
