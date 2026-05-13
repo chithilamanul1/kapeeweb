@@ -34,7 +34,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
          <Link href="/" className="relative group">
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-3 md:gap-4">
             <div className="relative group">
                <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300">
                   <Image src="/logo.png" alt="Kapee Logo" fill className="object-cover" />
@@ -42,15 +42,15 @@ const Navbar = () => {
                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-3 md:h-3 bg-gold rounded-full border-2 border-white shadow-sm" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className={`text-lg md:text-xl font-serif font-black tracking-tighter transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-emerald-900'}`}>KAPEE</span>
-              <span className={`text-[7px] md:text-[8px] uppercase font-bold tracking-[0.3em] transition-colors duration-300 ${isScrolled ? 'text-emerald-600' : 'text-emerald-700'}`}>Travels & Tours</span>
+              <span className={`text-lg md:text-xl font-serif font-black tracking-tighter transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-white'}`}>KAPEE</span>
+              <span className={`text-[7px] md:text-[8px] uppercase font-bold tracking-[0.3em] transition-colors duration-300 ${isScrolled ? 'text-emerald-600' : 'text-emerald-100/70'}`}>Travels & Tours</span>
             </div>
           </div>
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link key={link.name} href={link.href} className={`text-[11px] uppercase tracking-[0.2em] font-black transition-colors duration-300 ${isScrolled ? 'text-slate-600 hover:text-emerald-600' : 'text-emerald-900/80 hover:text-emerald-900'}`}>
+            <Link key={link.name} href={link.href} className={`text-[11px] uppercase tracking-[0.2em] font-black transition-colors duration-300 ${isScrolled ? 'text-slate-600 hover:text-emerald-600' : 'text-white hover:text-emerald-400'}`}>
               {link.name}
             </Link>
           ))}
@@ -69,7 +69,7 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <button 
-          className={`md:hidden p-2 transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-emerald-900'}`}
+          className={`md:hidden p-2 transition-colors duration-300 ${isScrolled ? 'text-emerald-950' : 'text-white'}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}

@@ -5,7 +5,7 @@ import { Star, ArrowRight, Play } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 md:pt-0 bg-emerald-950">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 md:pt-32 bg-emerald-950">
       {/* Background Video Layer */}
       <div className="absolute inset-0 z-0">
         <video 
