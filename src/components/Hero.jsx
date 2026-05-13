@@ -6,9 +6,9 @@ import Image from 'next/image';
 
 const Hero = () => {
   const images = [
-    { src: '/sigiriya-1.png', alt: 'Sigiriya Rock', height: 'h-[400px] md:h-[600px]', delay: 0.2 },
-    { src: '/hero-bg.png', alt: 'Sri Lanka Elephant', height: 'h-[350px] md:h-[500px]', delay: 0.4 },
-    { src: '/sigiriya-2.png', alt: 'Sri Lanka Nature', height: 'h-[450px] md:h-[650px]', delay: 0.6 },
+    { src: '/ella.jpg', alt: 'Ella Sri Lanka', height: 'h-[400px] md:h-[600px]', delay: 0.2 },
+    { src: '/hero.jpg', alt: 'Sri Lanka Travel', height: 'h-[350px] md:h-[500px]', delay: 0.4 },
+    { src: '/ahangama.jpg', alt: 'Ahangama Beach', height: 'h-[450px] md:h-[650px]', delay: 0.6 },
   ];
 
   return (

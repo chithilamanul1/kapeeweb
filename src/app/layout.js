@@ -60,7 +60,7 @@ export const metadata = {
     siteName: 'Kapee Travels and Tours',
     images: [
       {
-        url: '/hero-bg.png',
+        url: '/hero.jpg',
         width: 1200,
         height: 630,
         alt: 'Sri Lanka Landscape - Kapee Travels',
@@ -73,7 +73,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Kapee Travels and Tours | Premium Sri Lanka Travel',
     description: 'Explore Sri Lanka in comfort and style with bespoke tours and reliable airport transfers.',
-    images: ['/hero-bg.png'],
+    images: ['/hero.jpg'],
   },
   robots: {
     index: true,
