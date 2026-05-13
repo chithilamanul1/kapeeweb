@@ -7,15 +7,18 @@ import Image from 'next/image';
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20 md:pt-0">
-      {/* Background Image with Overlay */}
+      {/* Background Video with Overlay */}
       <div className="absolute inset-0 z-0">
-        <Image 
-          src="/hero-ai.png" 
-          alt="Luxury Sri Lanka Travel" 
-          fill 
-          className="object-cover"
-          priority
-        />
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/60 to-transparent z-10" />
       </div>
       
